@@ -1,4 +1,4 @@
-package me.winiarski.mydojo_pl;
+package me.winiarski.mydojo_pl.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

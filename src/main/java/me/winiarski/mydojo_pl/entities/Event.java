@@ -1,7 +1,5 @@
-package me.winiarski.mydojo_pl.entities.event;
+package me.winiarski.mydojo_pl.entities;
 
-import me.winiarski.mydojo_pl.entities.person.Student;
-import me.winiarski.mydojo_pl.entities.person.Trainer;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

@@ -22,17 +22,22 @@ public class Event {
 
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
-    private Trainer owner;
+    private User owner;
 
-    @ManyToMany(mappedBy = "events")
-    private List<Student> participants;
+    @ManyToMany
+    @JoinTable(
+            name = "event_participants",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> participants;
 
     @ManyToMany
     @JoinTable(
             name = "event_organizers",
             joinColumns = @JoinColumn(name = "event_id"),
-            inverseJoinColumns = @JoinColumn(name = "trainer_id")
+            inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private List<Trainer> organizers;
+    private List<User> organizers;
 
 }

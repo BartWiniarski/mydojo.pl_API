@@ -20,9 +20,14 @@ public class Message {
 
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)
-    private Trainer sender;
+    private User sender;
 
-    @ManyToMany(mappedBy = "messages")
-    private List<Student> receivers;
+    @ManyToMany
+    @JoinTable(
+            name = "message_receivers",
+            joinColumns = @JoinColumn(name = "message_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> receivers;
 
 }

@@ -1,10 +1,8 @@
-package me.winiarski.mydojo_pl.entities.trainingPlan;
+package me.winiarski.mydojo_pl.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import me.winiarski.mydojo_pl.entities.person.Trainer;
-import me.winiarski.mydojo_pl.entities.trainingGroup.TrainingGroup;
 
 import java.util.List;
 

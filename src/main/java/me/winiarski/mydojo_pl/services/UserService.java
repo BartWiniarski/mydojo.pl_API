@@ -2,14 +2,16 @@ package me.winiarski.mydojo_pl.services;
 
 import me.winiarski.mydojo_pl.entities.User;
 import me.winiarski.mydojo_pl.repositories.UserRepository;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
@@ -54,4 +56,16 @@ public class UserService {
         }
         userRepository.save(user);
     }
+
+//------------------SPRING SECURITY------------------\\
+
+    private final static String userNotFoundMessage = "User with e-mail %s not found";
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findUserByEmail(email)
+                .orElseThrow(()-> new UsernameNotFoundException(String.format(userNotFoundMessage,email)));
+    }
+
+
 }

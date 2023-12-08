@@ -21,11 +21,21 @@ public class TrainingGroup {
     private String description;
     private LocalTime date;
 
-    @ManyToMany(mappedBy = "trainingGroups")
-    private List<Trainer> trainers;
+    @ManyToMany
+    @JoinTable(
+            name = "training_groups_trainers",
+            joinColumns = @JoinColumn(name = "training_group_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> trainers;
 
-    @ManyToMany(mappedBy = "trainingGroups")
-    private List<Student> students;
+    @ManyToMany
+    @JoinTable(
+            name = "training_groups_students",
+            joinColumns = @JoinColumn(name = "training_group_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> students;
 
     @ManyToMany(mappedBy = "trainingGroups")
     private List<TrainingPlan> trainingPlans;

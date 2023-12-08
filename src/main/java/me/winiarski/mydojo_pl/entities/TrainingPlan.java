@@ -21,7 +21,7 @@ public class TrainingPlan {
 
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
-    private Trainer owner;
+    private User owner;
 
     @ManyToMany
     @JoinTable(

@@ -29,7 +29,12 @@ public class Event {
     @ManyToMany(mappedBy = "events")
     private List<Student> participants;
 
-    @ManyToMany(mappedBy = "events")
+    @ManyToMany
+    @JoinTable(
+            name = "event_organizers",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "trainer_id")
+    )
     private List<Trainer> organizers;
 
 }

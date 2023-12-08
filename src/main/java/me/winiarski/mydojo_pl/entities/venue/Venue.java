@@ -19,8 +19,6 @@ public class Venue {
     private String name;
     private String adress;
 
-    @OneToMany
-    private List<TrainingGroup> groups;
-
-
+    @OneToMany(mappedBy = "venue")
+    private List<TrainingGroup> trainingGroups;
 }

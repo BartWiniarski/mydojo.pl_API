@@ -21,4 +21,7 @@ public abstract class Person {
     @Column(unique = true)
     private String email;
     private String password;
+
+    @Column(columnDefinition = "boolean default true")
+    private Boolean active;
 }

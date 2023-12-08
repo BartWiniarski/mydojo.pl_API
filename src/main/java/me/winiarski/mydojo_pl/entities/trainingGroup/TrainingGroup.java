@@ -2,6 +2,8 @@ package me.winiarski.mydojo_pl.entities.trainingGroup;
 
 import me.winiarski.mydojo_pl.entities.person.Student;
 import me.winiarski.mydojo_pl.entities.person.Trainer;
+import me.winiarski.mydojo_pl.entities.trainingPlan.TrainingPlan;
+import me.winiarski.mydojo_pl.entities.venue.Venue;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +23,6 @@ public class TrainingGroup {
 
     private String name;
     private String description;
-    private String place;
     private LocalTime date;
 
     @ManyToMany(mappedBy = "trainingGroups")
@@ -29,5 +30,11 @@ public class TrainingGroup {
 
     @ManyToMany(mappedBy = "trainingGroups")
     private List<Student> students;
+
+    @ManyToMany(mappedBy = "trainingGroups")
+    private List<TrainingPlan> trainingPlans;
+
+    @ManyToOne
+    private Venue venue;
 
 }

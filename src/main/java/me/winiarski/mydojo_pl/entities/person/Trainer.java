@@ -28,12 +28,6 @@ public class Trainer extends Person{
     )
     private List<TrainingGroup> trainingGroups;
 
-    @ManyToMany
-    @JoinTable(
-            name = "events_trainers",
-            joinColumns = @JoinColumn(name = "trainer_id"),
-            inverseJoinColumns = @JoinColumn(name = "events_id")
-
-    )
+    @ManyToMany(mappedBy = "organizers")
     private List<Event> events;
 }

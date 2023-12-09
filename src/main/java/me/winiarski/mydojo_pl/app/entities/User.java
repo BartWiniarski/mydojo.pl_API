@@ -1,10 +1,7 @@
-package me.winiarski.mydojo_pl.entities;
+package me.winiarski.mydojo_pl.app.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +14,9 @@ import java.util.List;
 @Entity(name = "users")
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User implements UserDetails {
 
     @Id
@@ -33,7 +33,8 @@ public class User implements UserDetails {
     private Boolean locked;
     private Boolean enabled;
 
-    @ManyToMany
+    //TODO zastanowić się czy nie zmienić query na leftJoin
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -62,8 +63,6 @@ public class User implements UserDetails {
 
 //------------------CONSTRUCTORS--------------------\\
 
-    public User() {
-    }
 
     //student\\
     public User(String firstName, String lastName, LocalDate dob, int age, String email, String password, Boolean locked, Boolean enabled, List<Role> roles, List<Event> eventsAsParticipant, List<TrainingGroup> trainingGroupsAsStudent, User guardian, List<User> wards) {

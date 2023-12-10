@@ -30,8 +30,10 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
     private String password;
-    private Boolean locked;
-    private Boolean enabled;
+    @Builder.Default
+    private Boolean locked = false;
+    @Builder.Default
+    private Boolean enabled = true;
 
     //TODO zastanowić się czy nie zmienić query na leftJoin
     @ManyToMany(fetch = FetchType.EAGER)

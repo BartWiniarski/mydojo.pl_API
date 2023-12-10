@@ -27,6 +27,7 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest request
     ){
+        System.out.println("----------TEST Z KONTROLERA____");
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 }

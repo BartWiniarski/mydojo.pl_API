@@ -1,7 +1,7 @@
 package me.winiarski.mydojo_pl.security.authentication;
 
-import me.winiarski.mydojo_pl.app.entities.RoleType;
 import me.winiarski.mydojo_pl.app.entities.Role;
+import me.winiarski.mydojo_pl.app.entities.RoleType;
 import me.winiarski.mydojo_pl.app.entities.User;
 import me.winiarski.mydojo_pl.app.repositories.RoleRepository;
 import me.winiarski.mydojo_pl.app.services.UserService;
@@ -67,6 +67,7 @@ public class AuthenticationService {
                 )
         );
         User user = userService.getUserByEmail(request.getEmail());
+
         String jwtToken = jwtService.generateToken(user);
 
         return AuthenticationResponse.builder()

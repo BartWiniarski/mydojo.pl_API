@@ -29,6 +29,8 @@ public class UserService implements UserDetailsService {
     }
 
     public User getUserByEmail(String email){
+        final String USER_WITH_E_MAIL_NOT_FOUND = "User with e-mail %s not found";
+
         return userRepository.findUserByEmail(email)
                 .orElseThrow(()-> new UsernameNotFoundException(String.format(USER_WITH_E_MAIL_NOT_FOUND,email)));
         //TODO exception handling
@@ -64,14 +66,11 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-//------------------SPRING SECURITY------------------\\
 
-    private final static String USER_WITH_E_MAIL_NOT_FOUND = "User with e-mail %s not found";
+//------------------SPRING SECURITY------------------\\
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.findUserByEmail(email)
-                .orElseThrow(()-> new UsernameNotFoundException(String.format(USER_WITH_E_MAIL_NOT_FOUND,email)));
-        //TODO exception handling
+        return getUserByEmail(email);
     }
 }

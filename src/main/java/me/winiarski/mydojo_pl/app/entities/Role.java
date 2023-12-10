@@ -1,12 +1,16 @@
-package me.winiarski.mydojo_pl.entities;
+package me.winiarski.mydojo_pl.app.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity(name = "roles")
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Role {
 
     @Id

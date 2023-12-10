@@ -1,4 +1,4 @@
-package me.winiarski.mydojo_pl.entities;
+package me.winiarski.mydojo_pl.app.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;

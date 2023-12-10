@@ -1,15 +1,18 @@
-package me.winiarski.mydojo_pl.services;
+package me.winiarski.mydojo_pl.app.services;
 
-import me.winiarski.mydojo_pl.entities.User;
-import me.winiarski.mydojo_pl.repositories.UserRepository;
+import me.winiarski.mydojo_pl.app.entities.User;
+import me.winiarski.mydojo_pl.app.repositories.UserRepository;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
@@ -23,6 +26,14 @@ public class UserService {
 
     public User getUserById(Long id) {
         return userRepository.getReferenceById(id);
+    }
+
+    public User getUserByEmail(String email){
+        final String USER_WITH_E_MAIL_NOT_FOUND = "User with e-mail %s not found";
+
+        return userRepository.findUserByEmail(email)
+                .orElseThrow(()-> new UsernameNotFoundException(String.format(USER_WITH_E_MAIL_NOT_FOUND,email)));
+        //TODO exception handling
     }
 
     public void addNewUser(User user) {
@@ -53,5 +64,13 @@ public class UserService {
             throw new IllegalStateException("Student with provided ID: " + id + " does not exists.");
         }
         userRepository.save(user);
+    }
+
+
+//------------------SPRING SECURITY------------------\\
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return getUserByEmail(email);
     }
 }

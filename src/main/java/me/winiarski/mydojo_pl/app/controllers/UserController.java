@@ -1,7 +1,7 @@
-package me.winiarski.mydojo_pl.controllers;
+package me.winiarski.mydojo_pl.app.controllers;
 
-import me.winiarski.mydojo_pl.entities.User;
-import me.winiarski.mydojo_pl.services.UserService;
+import me.winiarski.mydojo_pl.app.entities.User;
+import me.winiarski.mydojo_pl.app.services.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

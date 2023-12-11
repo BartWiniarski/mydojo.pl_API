@@ -8,7 +8,7 @@
 		<version>3.2.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>me.winiarski</groupId>
+	<groupId>pl.mydojo</groupId>
 	<artifactId>mydojo_pl</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>mydojo.pl</name>

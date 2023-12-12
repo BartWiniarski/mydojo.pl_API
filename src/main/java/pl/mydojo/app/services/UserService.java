@@ -4,6 +4,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import pl.mydojo.app.dto.UserProfileDTO;
 import pl.mydojo.app.entities.Role;
 import pl.mydojo.app.entities.User;
 import pl.mydojo.app.repositories.UserRepository;
@@ -52,7 +53,7 @@ public class UserService implements UserDetailsService {
         boolean exists = userRepository.existsById(id);
 
         if (!exists) {
-            throw new IllegalStateException("Student with provided ID: " + id + " does not exists.");
+            throw new IllegalStateException("User with provided ID: " + id + " does not exists.");
         }
         userRepository.deleteById(id);
     }
@@ -62,7 +63,7 @@ public class UserService implements UserDetailsService {
         boolean exists = userRepository.existsById(id);
 
         if (!exists) {
-            throw new IllegalStateException("Student with provided ID: " + id + " does not exists.");
+            throw new IllegalStateException("User with provided ID: " + id + " does not exists.");
         }
         userRepository.save(user);
     }
@@ -71,11 +72,37 @@ public class UserService implements UserDetailsService {
         return userRepository.findRolesByUserId(id);
     }
 
+    public UserProfileDTO getUserProfile(String userEmail) {
+        User user = getUserByEmail(userEmail);
+
+        return UserProfileDTO.builder()
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .dob(user.getDob())
+                .build();
+    }
+
+    public void updateUserProfile(String userEmail, UserProfileDTO userProfileDTO) {
+        User user = getUserByEmail(userEmail);
+
+        if (userProfileDTO.getFirstName() != null) {
+            user.setFirstName(userProfileDTO.getFirstName());
+        }
+        if (userProfileDTO.getLastName() != null) {
+            user.setLastName(userProfileDTO.getLastName());
+        }
+        if (userProfileDTO.getDob() != null) {
+            user.setDob(userProfileDTO.getDob());
+        }
+
+        updateUser(user);
+    }
 
 //------------------SPRING SECURITY------------------\\
-
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return getUserByEmail(email);
     }
+
+
 }

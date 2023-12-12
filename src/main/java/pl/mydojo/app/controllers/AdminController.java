@@ -1,8 +1,8 @@
 package pl.mydojo.app.controllers;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import pl.mydojo.app.entities.User;
+import pl.mydojo.app.services.UserService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,5 +32,36 @@ public class AdminController {
                 .time(timeNow)
                 .loremIpsum(loremIpsum)
                 .build();
+    }
+
+    private final UserService userService;
+
+    public AdminController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping("/")
+    public List<User> getUsersList() {
+        return userService.getUsersList();
+    }
+
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable Long id) {
+        return userService.getUserById(id);
+    }
+
+    @PostMapping("/")
+    public void postUser(@RequestBody User user) {
+        userService.addNewUser(user);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteUserById(@PathVariable Long id) {
+        userService.deleteUserById(id);
+    }
+
+    @PutMapping("/")
+    public void putUser(@RequestBody User user){
+        userService.updateUser(user);
     }
 }

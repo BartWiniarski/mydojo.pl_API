@@ -13,7 +13,7 @@ import java.util.List;
 public class AdminController {
 
     @GetMapping("/test")
-    public List<String> testAdmin(){
+    public TestResponse testAdmin(){
         String role = "admin";
         LocalDateTime timeNow = LocalDateTime.now();
         String loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit," +
@@ -27,12 +27,10 @@ public class AdminController {
                 "sollicitudin aliquam ultrices sagittis orci a scelerisque purus. Elementum" +
                 "egestas sed sed risus pretium quam. Tincidunt nunc pulvinar sapien et ligula";
 
-        List<String> testPackage =new ArrayList<>(){{
-            add("Role: " + role);
-            add("Time: " + timeNow);
-            add("LoremIpsum: " + loremIpsum);
-        }};
-
-        return testPackage;
+        return TestResponse.builder()
+                .role(role)
+                .time(timeNow)
+                .loremIpsum(loremIpsum)
+                .build();
     }
 }

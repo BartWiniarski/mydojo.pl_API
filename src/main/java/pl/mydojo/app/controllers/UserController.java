@@ -24,7 +24,7 @@ public class UserController {
         return userService.getUserProfile(userEmailFromToken);
     }
 
-    @PostMapping("/profile")
+    @PutMapping("/profile")
     public ResponseEntity<?> postUserProfile(@RequestHeader("Authorization") String token,
                                              @RequestBody UserProfileDTO userProfileDTO) {
 

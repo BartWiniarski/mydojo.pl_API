@@ -12,6 +12,12 @@ import java.util.List;
 @RequestMapping("api/v1/admin")
 public class AdminController {
 
+    private final UserService userService;
+
+    public AdminController(UserService userService) {
+        this.userService = userService;
+    }
+
     @GetMapping("/test")
     public TestResponse testAdmin(){
         String role = "admin";
@@ -34,34 +40,6 @@ public class AdminController {
                 .build();
     }
 
-    private final UserService userService;
 
-    public AdminController(UserService userService) {
-        this.userService = userService;
-    }
 
-    @GetMapping("/")
-    public List<User> getUsersList() {
-        return userService.getUsersList();
-    }
-
-    @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
-    }
-
-    @PostMapping("/")
-    public void postUser(@RequestBody User user) {
-        userService.addNewUser(user);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteUserById(@PathVariable Long id) {
-        userService.deleteUserById(id);
-    }
-
-    @PutMapping("/")
-    public void putUser(@RequestBody User user){
-        userService.updateUser(user);
-    }
 }

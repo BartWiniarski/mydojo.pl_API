@@ -7,6 +7,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -62,6 +63,18 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "guardian")
     private List<User> wards;
+
+    @PrePersist
+    public void calculateAge() {
+        if (dob != null) {
+            LocalDate currentDate = LocalDate.now();
+            if (currentDate.isBefore(dob)) {
+                age = Period.between(dob, currentDate).getYears() - 1;
+            } else {
+                age = Period.between(dob, currentDate).getYears();
+            }
+        }
+    }
 
 //------------------CONSTRUCTORS--------------------\\
 

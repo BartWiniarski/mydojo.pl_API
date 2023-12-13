@@ -1,8 +1,8 @@
 package pl.mydojo.app.controllers;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import pl.mydojo.app.entities.User;
+import pl.mydojo.app.services.UserService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,6 +11,12 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/admin")
 public class AdminController {
+
+    private final UserService userService;
+
+    public AdminController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/test")
     public TestResponse testAdmin(){
@@ -33,4 +39,7 @@ public class AdminController {
                 .loremIpsum(loremIpsum)
                 .build();
     }
+
+
+
 }

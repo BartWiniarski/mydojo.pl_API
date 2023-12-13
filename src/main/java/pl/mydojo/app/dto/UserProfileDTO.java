@@ -1,20 +1,18 @@
-package pl.mydojo.security.authentication;
+package pl.mydojo.app.dto;
+
 import lombok.*;
 
 import java.time.LocalDate;
 
-
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-public class RegisterRequest {
-
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserProfileDTO {
     private String firstName;
     private String lastName;
     private LocalDate dob;
     private String email;
-    private String password;
+    //TODO: w przyszłości dodać guardian/wards
 }
-

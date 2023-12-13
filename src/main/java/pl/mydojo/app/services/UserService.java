@@ -4,6 +4,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import pl.mydojo.app.dto.UserProfileDTO;
+import pl.mydojo.app.dto.UserProfileDTOMapper;
 import pl.mydojo.app.entities.Role;
 import pl.mydojo.app.entities.User;
 import pl.mydojo.app.repositories.UserRepository;
@@ -16,13 +18,24 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final UserProfileDTOMapper userProfileDTOMapper;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository,
+                       UserProfileDTOMapper userProfileDTOMapper) {
         this.userRepository = userRepository;
+        this.userProfileDTOMapper = userProfileDTOMapper;
     }
 
-    public List<User> getUsersList() {
-        return userRepository.findAll();
+//------------------ CRUD ------------------\\
+    public void addNewUser(User user) {
+
+        Optional<User> userByEmail =
+                userRepository.findUserByEmail(user.getEmail());
+
+        if (userByEmail.isPresent()) {
+            throw new IllegalStateException("User with provided e-mail already exists.");
+        }
+        userRepository.save(user);
     }
 
     public User getUserById(Long id) {
@@ -37,13 +50,12 @@ public class UserService implements UserDetailsService {
         //TODO exception handling
     }
 
-    public void addNewUser(User user) {
+    public void updateUser(User user) {
+        Long id = user.getId();
+        boolean exists = userRepository.existsById(id);
 
-        Optional<User> userByEmail =
-                userRepository.findUserByEmail(user.getEmail());
-
-        if (userByEmail.isPresent()) {
-            throw new IllegalStateException("User with provided e-mail already exists.");
+        if (!exists) {
+            throw new IllegalStateException("User with provided ID: " + id + " does not exists.");
         }
         userRepository.save(user);
     }
@@ -52,30 +64,46 @@ public class UserService implements UserDetailsService {
         boolean exists = userRepository.existsById(id);
 
         if (!exists) {
-            throw new IllegalStateException("Student with provided ID: " + id + " does not exists.");
+            throw new IllegalStateException("User with provided ID: " + id + " does not exists.");
         }
         userRepository.deleteById(id);
     }
 
-    public void updateUser(User user) {
-        Long id = user.getId();
-        boolean exists = userRepository.existsById(id);
 
-        if (!exists) {
-            throw new IllegalStateException("Student with provided ID: " + id + " does not exists.");
+//------------------ PROFILE DTO ------------------\\
+    public UserProfileDTO getUserProfile(String userEmail) {
+        User user = getUserByEmail(userEmail);
+        return userProfileDTOMapper.apply(user);
+    }
+
+    public void updateUserProfile(String userEmail, UserProfileDTO userProfileDTO) {
+        User user = getUserByEmail(userEmail);
+
+        if (userProfileDTO.getFirstName() != null) {
+            user.setFirstName(userProfileDTO.getFirstName());
         }
-        userRepository.save(user);
+        if (userProfileDTO.getLastName() != null) {
+            user.setLastName(userProfileDTO.getLastName());
+        }
+        if (userProfileDTO.getDob() != null) {
+            user.setDob(userProfileDTO.getDob());
+        }
+
+        updateUser(user);
     }
 
-    public List<Role> getUserRoles(Long id) {
-        return userRepository.findRolesByUserId(id);
-    }
+
+//------------------ MISCELLANEOUS ------------------\\
+public List<Role> getUserRoles(Long id) {
+    return userRepository.findRolesByUserId(id);
+}
 
 
 //------------------SPRING SECURITY------------------\\
-
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return getUserByEmail(email);
     }
+
+
 }

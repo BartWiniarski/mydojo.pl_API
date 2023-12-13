@@ -4,6 +4,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import pl.mydojo.app.dto.UserProfileAdminDTO;
+import pl.mydojo.app.dto.UserProfileAdminDTOMapper;
 import pl.mydojo.app.dto.UserProfileDTO;
 import pl.mydojo.app.dto.UserProfileDTOMapper;
 import pl.mydojo.app.entities.Role;
@@ -12,6 +14,7 @@ import pl.mydojo.app.repositories.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -19,14 +22,17 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final UserProfileDTOMapper userProfileDTOMapper;
+    private final UserProfileAdminDTOMapper userProfileAdminDTOMapper;
 
     public UserService(UserRepository userRepository,
-                       UserProfileDTOMapper userProfileDTOMapper) {
+                       UserProfileDTOMapper userProfileDTOMapper,
+                       UserProfileAdminDTOMapper userProfileAdminDTOMapper) {
         this.userRepository = userRepository;
         this.userProfileDTOMapper = userProfileDTOMapper;
+        this.userProfileAdminDTOMapper = userProfileAdminDTOMapper;
     }
 
-//------------------ CRUD ------------------\\
+    //------------------ CRUD ------------------\\
     public void addNewUser(User user) {
 
         Optional<User> userByEmail =
@@ -70,7 +76,7 @@ public class UserService implements UserDetailsService {
     }
 
 
-//------------------ PROFILE DTO ------------------\\
+    //------------------ USER PROFILE DTO ------------------\\
     public UserProfileDTO getUserProfile(String userEmail) {
         User user = getUserByEmail(userEmail);
         return userProfileDTOMapper.apply(user);
@@ -93,13 +99,39 @@ public class UserService implements UserDetailsService {
     }
 
 
-//------------------ MISCELLANEOUS ------------------\\
-public List<Role> getUserRoles(Long id) {
-    return userRepository.findRolesByUserId(id);
-}
+    //------------------ ADMIN ------------------\\
+    public List<UserProfileAdminDTO> getUsersProfileAdmin() {
+        List<User> users = userRepository.findAll();
+
+        return users.stream()
+                .map(u -> userProfileAdminDTOMapper.apply(u))
+                .collect(Collectors.toList());
+    }
+
+    public UserProfileAdminDTO getUserProfileAdminById(Long id) {
+        User user = userRepository.findUserById(id);
+
+        return userProfileAdminDTOMapper.apply(user);
+    }
+
+    public void updateUserProfileAdminById(Long id, UserProfileAdminDTO userProfileAdminDTO) {
+        User user = userRepository.findUserById(id);
+
+        if (userProfileAdminDTO.getFirstName() != null) {
+            user.setFirstName(userProfileAdminDTO.getFirstName());
+        }
+        //TODO dodać inne pola, jest sens sprawdzać? nie lepiej nadpisać?
+        updateUser(user);
+    }
 
 
-//------------------SPRING SECURITY------------------\\
+    //------------------ MISCELLANEOUS ------------------\\
+    public List<Role> getUserRoles(Long id) {
+        return userRepository.findRolesByUserId(id);
+    }
+
+
+    //------------------SPRING SECURITY------------------\\
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return getUserByEmail(email);

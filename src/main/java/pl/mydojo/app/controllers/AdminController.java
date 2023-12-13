@@ -1,6 +1,8 @@
 package pl.mydojo.app.controllers;
 
 import org.springframework.web.bind.annotation.*;
+import pl.mydojo.app.dto.UserProfileAdminDTO;
+import pl.mydojo.app.dto.UserProfileDTO;
 import pl.mydojo.app.entities.User;
 import pl.mydojo.app.services.UserService;
 
@@ -19,7 +21,7 @@ public class AdminController {
     }
 
     @GetMapping("/test")
-    public TestResponse testAdmin(){
+    public TestResponse testAdmin() {
         String role = "admin";
         LocalDateTime timeNow = LocalDateTime.now();
         String loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit," +
@@ -40,6 +42,20 @@ public class AdminController {
                 .build();
     }
 
+    @GetMapping("/users")
+    public List<UserProfileAdminDTO> getUsers() {
+        return userService.getUsersProfileAdmin();
+    }
 
+    @GetMapping("/users/{id}")
+    public UserProfileAdminDTO getUserById(@PathVariable Long id) {
+        return userService.getUserProfileAdminById(id);
+    }
+
+    @PutMapping("/users/{id}")
+    public void putUserById(@PathVariable Long id,
+                            @RequestBody UserProfileAdminDTO userProfileAdminDTO) {
+        userService.updateUserProfileAdminById(id, userProfileAdminDTO);
+    }
 
 }

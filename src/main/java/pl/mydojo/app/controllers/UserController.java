@@ -25,7 +25,7 @@ public class UserController {
     }
 
     @PutMapping("/profile")
-    public ResponseEntity<?> postUserProfile(@RequestHeader("Authorization") String token,
+    public ResponseEntity<?> putUserProfile(@RequestHeader("Authorization") String token,
                                              @RequestBody UserProfileDTO userProfileDTO) {
 
         String userEmailFromToken = jwtService.extractUsername(token.substring(7));

@@ -1,9 +1,5 @@
 package pl.mydojo.security;
 
-import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import pl.mydojo.app.services.UserService;
-import pl.mydojo.security.jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,8 +16,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import pl.mydojo.app.services.UserService;
+import pl.mydojo.security.jwt.JwtAuthenticationFilter;
 
-import java.util.Arrays;
+import static pl.mydojo.app.entities.RoleType.ADMIN;
 
 @Configuration
 @EnableWebSecurity
@@ -58,7 +56,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/home/**").permitAll()
                         .requestMatchers("/api/v1/auth/**").permitAll()
@@ -66,11 +63,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/student/**").hasRole("STUDENT")
                         .anyRequest().authenticated()
-
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .csrf((csrf) -> csrf.disable());
 
         return http.build();
     }

@@ -47,6 +47,11 @@ public class AdminController {
         return userService.getUsersProfileAdmin();
     }
 
+    @PostMapping("/users")
+    public void postUser(@RequestBody UserProfileAdminDTO userProfileAdminDTO) {
+        userService.addUserProfileAdmin(userProfileAdminDTO);
+    }
+
     @GetMapping("/users/{id}")
     public UserProfileAdminDTO getUserById(@PathVariable Long id) {
         return userService.getUserProfileAdminById(id);
@@ -56,6 +61,11 @@ public class AdminController {
     public void putUserById(@PathVariable Long id,
                             @RequestBody UserProfileAdminDTO userProfileAdminDTO) {
         userService.updateUserProfileAdminById(id, userProfileAdminDTO);
+    }
+
+    @DeleteMapping("/users/{id}")
+    public void deleteUserById(@PathVariable Long id) {
+        userService.deleteUserById(id);
     }
 
 }

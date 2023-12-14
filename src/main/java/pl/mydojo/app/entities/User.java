@@ -65,6 +65,7 @@ public class User implements UserDetails {
     private List<User> wards;
 
     @PrePersist
+    @PreUpdate
     public void calculateAge() {
         if (dob != null) {
             LocalDate currentDate = LocalDate.now();

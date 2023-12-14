@@ -108,6 +108,25 @@ public class UserService implements UserDetailsService {
                 .collect(Collectors.toList());
     }
 
+    public void addUserProfileAdmin(UserProfileAdminDTO userProfileAdminDTO) {
+        Optional<User> userByEmail =
+                userRepository.findUserByEmail(userProfileAdminDTO.getEmail());
+
+        if (userByEmail.isPresent()) {
+            throw new IllegalStateException("User with provided e-mail already exists.");
+        }
+
+        User user = User.builder()
+                .firstName(userProfileAdminDTO.getFirstName())
+                .lastName(userProfileAdminDTO.getLastName())
+                .dob(userProfileAdminDTO.getDob())
+                .email(userProfileAdminDTO.getEmail())
+                .roles(userProfileAdminDTO.getRoles())
+                .build();
+
+        userRepository.save(user);
+    }
+
     public UserProfileAdminDTO getUserProfileAdminById(Long id) {
         User user = userRepository.findUserById(id);
 
@@ -120,7 +139,19 @@ public class UserService implements UserDetailsService {
         if (userProfileAdminDTO.getFirstName() != null) {
             user.setFirstName(userProfileAdminDTO.getFirstName());
         }
-        //TODO dodać inne pola, jest sens sprawdzać? nie lepiej nadpisać?
+        if (userProfileAdminDTO.getLastName() != null) {
+            user.setLastName(userProfileAdminDTO.getLastName());
+        }
+        if (userProfileAdminDTO.getDob() != null) {
+            user.setDob(userProfileAdminDTO.getDob());
+        }
+        if (userProfileAdminDTO.getEmail() != null) {
+            user.setEmail(userProfileAdminDTO.getEmail());
+        }
+        if (userProfileAdminDTO.getRoles() != null) {
+            user.setRoles(userProfileAdminDTO.getRoles());
+        }
+
         updateUser(user);
     }
 

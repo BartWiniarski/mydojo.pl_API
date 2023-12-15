@@ -3,7 +3,9 @@ package pl.mydojo.app.controllers;
 import org.springframework.web.bind.annotation.*;
 import pl.mydojo.app.dto.UserProfileAdminDTO;
 import pl.mydojo.app.dto.UserProfileDTO;
+import pl.mydojo.app.entities.TrainingGroup;
 import pl.mydojo.app.entities.User;
+import pl.mydojo.app.services.TrainingGroupService;
 import pl.mydojo.app.services.UserService;
 
 import java.time.LocalDateTime;
@@ -15,9 +17,12 @@ import java.util.List;
 public class AdminController {
 
     private final UserService userService;
+    private final TrainingGroupService trainingGroupService;
 
-    public AdminController(UserService userService) {
+    public AdminController(UserService userService,
+                           TrainingGroupService trainingGroupService) {
         this.userService = userService;
+        this.trainingGroupService = trainingGroupService;
     }
 
     @GetMapping("/test")
@@ -42,6 +47,8 @@ public class AdminController {
                 .build();
     }
 
+
+// --------------- USERS -------------------- \\
     @GetMapping("/users")
     public List<UserProfileAdminDTO> getUsers() {
         return userService.getUsersProfileAdmin();
@@ -68,4 +75,27 @@ public class AdminController {
         userService.deleteUserById(id);
     }
 
+
+// --------------- TRAINING GROUPS -------------------- \\    
+
+    @GetMapping("/trainingGroups")
+    public List<TrainingGroup> getTrainingGroups() {
+        return trainingGroupService.getTrainingGroups();
+    }
+
+    @PostMapping("/trainingGroups")
+    public void postTrainingGroup(@RequestBody TrainingGroup trainingGroup) {
+        trainingGroupService.addNewTrainingGroup(trainingGroup);
+    }
+
+    @PutMapping("/trainingGroups/{id}")
+    public void putTrainingGroupById(@PathVariable Long id,
+                                      @RequestBody TrainingGroup trainingGroup) {
+        trainingGroupService.updateTrainingGroupById(id, trainingGroup);
+    }
+
+    @DeleteMapping("/trainingGroups/{id}")
+    public void deleteTrainingGroupById(@PathVariable Long id){
+        trainingGroupService.deleteTrainingGroupById(id);
+    }
 }

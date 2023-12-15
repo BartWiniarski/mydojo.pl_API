@@ -1,10 +1,7 @@
 package pl.mydojo.app.controllers;
 
 import org.springframework.web.bind.annotation.*;
-import pl.mydojo.app.dto.StudentProfileDTO;
-import pl.mydojo.app.dto.TrainerProfileDTO;
-import pl.mydojo.app.dto.UserProfileAdminDTO;
-import pl.mydojo.app.dto.UserProfileDTO;
+import pl.mydojo.app.dto.*;
 import pl.mydojo.app.entities.TrainingGroup;
 import pl.mydojo.app.entities.User;
 import pl.mydojo.app.services.TrainingGroupService;
@@ -81,7 +78,7 @@ public class AdminController {
 // --------------- TRAINING GROUPS -------------------- \\
 
     @GetMapping("/trainingGroups")
-    public List<TrainingGroup> getTrainingGroups() {
+    public List<TrainingGroupDTO> getTrainingGroups() {
         return trainingGroupService.getTrainingGroups();
     }
 

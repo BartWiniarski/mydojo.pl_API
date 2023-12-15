@@ -15,7 +15,8 @@ public class StudentProfileDTOMapper implements Function<User, StudentProfileDTO
         return new StudentProfileDTO(
                 user.getId(),
                 user.getFirstName(),
-                user.getLastName()
+                user.getLastName(),
+                user.getAge()
         );
     }
 }

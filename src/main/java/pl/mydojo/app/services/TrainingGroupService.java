@@ -1,26 +1,37 @@
 package pl.mydojo.app.services;
 
 import org.springframework.stereotype.Service;
+import pl.mydojo.app.dto.TrainingGroupDTO;
+import pl.mydojo.app.dto.TrainingGroupDTOMapper;
 import pl.mydojo.app.entities.TrainingGroup;
 import pl.mydojo.app.repositories.TrainingGroupRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TrainingGroupService {
 
     private final TrainingGroupRepository trainingGroupRepository;
+    private final TrainingGroupDTOMapper trainingGroupDTOMapper;
 
-    public TrainingGroupService(TrainingGroupRepository trainingGroupRepository) {
+    public TrainingGroupService(TrainingGroupRepository trainingGroupRepository,
+                                TrainingGroupDTOMapper trainingGroupDTOMapper) {
         this.trainingGroupRepository = trainingGroupRepository;
+        this.trainingGroupDTOMapper = trainingGroupDTOMapper;
     }
 
     //------------------ CRUD ------------------\\
 
-    public List<TrainingGroup> getTrainingGroups() {
-        return trainingGroupRepository.findAll();
+    public List<TrainingGroupDTO> getTrainingGroups() {
+        List<TrainingGroup> trainingGroups = trainingGroupRepository.findAll();
+
+        return trainingGroups.stream()
+                .map(u -> trainingGroupDTOMapper.apply(u))
+                .collect(Collectors.toList());
     }
 
+    //TODO zmienić reszte metod na DTO mapper
     public void addNewTrainingGroup(TrainingGroup trainingGroup) {
         trainingGroupRepository.save(trainingGroup);
     }

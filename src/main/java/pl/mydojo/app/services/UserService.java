@@ -4,11 +4,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import pl.mydojo.app.dto.UserProfileAdminDTO;
-import pl.mydojo.app.dto.UserProfileAdminDTOMapper;
-import pl.mydojo.app.dto.UserProfileDTO;
-import pl.mydojo.app.dto.UserProfileDTOMapper;
+import pl.mydojo.app.dto.*;
 import pl.mydojo.app.entities.Role;
+import pl.mydojo.app.entities.RoleType;
 import pl.mydojo.app.entities.User;
 import pl.mydojo.app.repositories.UserRepository;
 
@@ -23,16 +21,22 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final UserProfileDTOMapper userProfileDTOMapper;
     private final UserProfileAdminDTOMapper userProfileAdminDTOMapper;
+    private final TrainerProfileDTOMapper trainerProfileDTOMapper;
+    private final StudentProfileDTOMapper studentProfileDTOMapper;
 
     public UserService(UserRepository userRepository,
                        UserProfileDTOMapper userProfileDTOMapper,
-                       UserProfileAdminDTOMapper userProfileAdminDTOMapper) {
+                       UserProfileAdminDTOMapper userProfileAdminDTOMapper,
+                       TrainerProfileDTOMapper trainerProfileDTOMapper,
+                       StudentProfileDTOMapper studentProfileDTOMapper) {
         this.userRepository = userRepository;
         this.userProfileDTOMapper = userProfileDTOMapper;
         this.userProfileAdminDTOMapper = userProfileAdminDTOMapper;
+        this.trainerProfileDTOMapper = trainerProfileDTOMapper;
+        this.studentProfileDTOMapper = studentProfileDTOMapper;
     }
 
-    //------------------ CRUD ------------------\\
+    //------------------ USER CRUD ------------------\\
     public void addNewUser(User user) {
 
         Optional<User> userByEmail =
@@ -155,6 +159,21 @@ public class UserService implements UserDetailsService {
         updateUser(user);
     }
 
+    public List<TrainerProfileDTO> getTrainersProfile() {
+        List<User> userTrainers = userRepository.findAllByRole(RoleType.TRAINER);
+
+        return userTrainers.stream()
+                .map(u -> trainerProfileDTOMapper.apply(u))
+                .collect(Collectors.toList());
+    }
+
+    public List<StudentProfileDTO> getStudentsProfile() {
+        List<User> userStudents = userRepository.findAllByRole(RoleType.STUDENT);
+
+        return userStudents.stream()
+                .map(u -> studentProfileDTOMapper.apply(u))
+                .collect(Collectors.toList());
+    }
 
     //------------------ MISCELLANEOUS ------------------\\
     public List<Role> getUserRoles(Long id) {

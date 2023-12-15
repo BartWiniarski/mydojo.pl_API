@@ -1,6 +1,8 @@
 package pl.mydojo.app.controllers;
 
 import org.springframework.web.bind.annotation.*;
+import pl.mydojo.app.dto.StudentProfileDTO;
+import pl.mydojo.app.dto.TrainerProfileDTO;
 import pl.mydojo.app.dto.UserProfileAdminDTO;
 import pl.mydojo.app.dto.UserProfileDTO;
 import pl.mydojo.app.entities.TrainingGroup;
@@ -48,7 +50,7 @@ public class AdminController {
     }
 
 
-// --------------- USERS -------------------- \\
+    // --------------- USERS -------------------- \\
     @GetMapping("/users")
     public List<UserProfileAdminDTO> getUsers() {
         return userService.getUsersProfileAdmin();
@@ -76,7 +78,7 @@ public class AdminController {
     }
 
 
-// --------------- TRAINING GROUPS -------------------- \\    
+// --------------- TRAINING GROUPS -------------------- \\
 
     @GetMapping("/trainingGroups")
     public List<TrainingGroup> getTrainingGroups() {
@@ -90,12 +92,28 @@ public class AdminController {
 
     @PutMapping("/trainingGroups/{id}")
     public void putTrainingGroupById(@PathVariable Long id,
-                                      @RequestBody TrainingGroup trainingGroup) {
+                                     @RequestBody TrainingGroup trainingGroup) {
         trainingGroupService.updateTrainingGroupById(id, trainingGroup);
     }
 
     @DeleteMapping("/trainingGroups/{id}")
-    public void deleteTrainingGroupById(@PathVariable Long id){
+    public void deleteTrainingGroupById(@PathVariable Long id) {
         trainingGroupService.deleteTrainingGroupById(id);
     }
+
+    // --------------- TRAINERS -------------------- \\
+    @GetMapping("/trainers")
+    public List<TrainerProfileDTO> getTrainers() {
+
+        return userService.getTrainersProfile();
+    }
+
+    // --------------- STUDENTS -------------------- \\
+    @GetMapping("/students")
+    public List<StudentProfileDTO> getStudents() {
+
+        return userService.getStudentsProfile();
+    }
+
+
 }

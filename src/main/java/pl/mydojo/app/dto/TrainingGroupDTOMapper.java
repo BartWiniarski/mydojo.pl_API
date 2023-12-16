@@ -22,14 +22,14 @@ public class TrainingGroupDTOMapper implements Function<TrainingGroup, TrainingG
 
     @Override
     public TrainingGroupDTO apply(TrainingGroup trainingGroup) {
-        List<StudentProfileDTO> students = trainingGroup.getStudents()
+        List<Long> students = trainingGroup.getStudents()
                 .stream()
-                .map(u -> studentProfileDTOMapper.apply(u))
+                .map(s-> s.getId())
                 .collect(Collectors.toList());
 
-        List<TrainerProfileDTO> trainers = trainingGroup.getTrainers()
+        List<Long> trainers = trainingGroup.getTrainers()
                 .stream()
-                .map(t -> trainerProfileDTOMapper.apply(t))
+                .map(t -> t.getId())
                 .collect(Collectors.toList());
 
         return new TrainingGroupDTO(

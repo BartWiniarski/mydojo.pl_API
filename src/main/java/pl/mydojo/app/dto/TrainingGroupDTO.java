@@ -13,6 +13,6 @@ public class TrainingGroupDTO {
     private Long id;
     private String name;
     private String description;
-    private List<StudentProfileDTO> students;
-    private List<TrainerProfileDTO> trainers;
+    private List<Long> students;
+    private List<Long> trainers;
 }

@@ -87,11 +87,12 @@ public class AdminController {
         trainingGroupService.addNewTrainingGroup(trainingGroupDTO);
     }
 
-    @PutMapping("/trainingGroups/{id}")
-    public void putTrainingGroupById(@PathVariable Long id,
-                                     @RequestBody TrainingGroupDTO trainingGroupDTO) {
-        trainingGroupService.updateTrainingGroupById(id, trainingGroupDTO);
-    }
+    //TODO poprawić na nowych studentów i trenerów jako tylko ID
+//    @PutMapping("/trainingGroups/{id}")
+//    public void putTrainingGroupById(@PathVariable Long id,
+//                                     @RequestBody TrainingGroupDTO trainingGroupDTO) {
+//        trainingGroupService.updateTrainingGroupById(id, trainingGroupDTO);
+//    }
 
     @DeleteMapping("/trainingGroups/{id}")
     public void deleteTrainingGroupById(@PathVariable Long id) {

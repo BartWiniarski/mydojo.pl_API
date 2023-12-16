@@ -83,14 +83,14 @@ public class AdminController {
     }
 
     @PostMapping("/trainingGroups")
-    public void postTrainingGroup(@RequestBody TrainingGroup trainingGroup) {
-        trainingGroupService.addNewTrainingGroup(trainingGroup);
+    public void postTrainingGroup(@RequestBody TrainingGroupDTO trainingGroupDTO) {
+        trainingGroupService.addNewTrainingGroup(trainingGroupDTO);
     }
 
     @PutMapping("/trainingGroups/{id}")
     public void putTrainingGroupById(@PathVariable Long id,
-                                     @RequestBody TrainingGroup trainingGroup) {
-        trainingGroupService.updateTrainingGroupById(id, trainingGroup);
+                                     @RequestBody TrainingGroupDTO trainingGroupDTO) {
+        trainingGroupService.updateTrainingGroupById(id, trainingGroupDTO);
     }
 
     @DeleteMapping("/trainingGroups/{id}")

@@ -1,8 +1,8 @@
 package pl.mydojo.app.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
 import java.time.LocalTime;
 import java.util.List;
 
@@ -11,6 +11,9 @@ import java.util.List;
 @Table(name = "trainingGroups")
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TrainingGroup {
 
     @Id

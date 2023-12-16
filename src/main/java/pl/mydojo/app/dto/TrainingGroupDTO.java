@@ -2,6 +2,8 @@ package pl.mydojo.app.dto;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -11,7 +13,6 @@ public class TrainingGroupDTO {
     private Long id;
     private String name;
     private String description;
-    private int numberOfStudents;
-    private String trainers;
-
+    private List<StudentProfileDTO> students;
+    private List<TrainerProfileDTO> trainers;
 }

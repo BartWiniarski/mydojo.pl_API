@@ -162,7 +162,8 @@ public class UserService implements UserDetailsService {
     public List<TrainerProfileDTO> getTrainersProfile() {
         List<User> userTrainers = userRepository.findAllByRole(RoleType.TRAINER);
 
-        return userTrainers.stream()
+        return userTrainers
+                .stream()
                 .map(u -> trainerProfileDTOMapper.apply(u))
                 .collect(Collectors.toList());
     }
@@ -170,7 +171,8 @@ public class UserService implements UserDetailsService {
     public List<StudentProfileDTO> getStudentsProfile() {
         List<User> userStudents = userRepository.findAllByRole(RoleType.STUDENT);
 
-        return userStudents.stream()
+        return userStudents
+                .stream()
                 .map(u -> studentProfileDTOMapper.apply(u))
                 .collect(Collectors.toList());
     }

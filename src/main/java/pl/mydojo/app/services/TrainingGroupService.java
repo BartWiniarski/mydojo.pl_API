@@ -4,7 +4,9 @@ import org.springframework.stereotype.Service;
 import pl.mydojo.app.dto.TrainingGroupDTO;
 import pl.mydojo.app.dto.TrainingGroupDTOMapper;
 import pl.mydojo.app.entities.TrainingGroup;
+import pl.mydojo.app.entities.User;
 import pl.mydojo.app.repositories.TrainingGroupRepository;
+import pl.mydojo.app.repositories.UserRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,11 +16,14 @@ public class TrainingGroupService {
 
     private final TrainingGroupRepository trainingGroupRepository;
     private final TrainingGroupDTOMapper trainingGroupDTOMapper;
+    private final UserRepository userRepository;
 
     public TrainingGroupService(TrainingGroupRepository trainingGroupRepository,
-                                TrainingGroupDTOMapper trainingGroupDTOMapper) {
+                                TrainingGroupDTOMapper trainingGroupDTOMapper,
+                                UserRepository userRepository) {
         this.trainingGroupRepository = trainingGroupRepository;
         this.trainingGroupDTOMapper = trainingGroupDTOMapper;
+        this.userRepository = userRepository;
     }
 
     //------------------ CRUD ------------------\\
@@ -32,11 +37,17 @@ public class TrainingGroupService {
     }
 
     //TODO zmienić reszte metod na DTO mapper
-    public void addNewTrainingGroup(TrainingGroup trainingGroup) {
+    public void addNewTrainingGroup(TrainingGroupDTO trainingGroupDTO) {
+
+        TrainingGroup trainingGroup = TrainingGroup.builder()
+                .name(trainingGroupDTO.getName())
+                .description(trainingGroupDTO.getDescription())
+                .build();
+
         trainingGroupRepository.save(trainingGroup);
     }
 
-    public void updateTrainingGroupById(Long id, TrainingGroup trainingGroupUpdated) {
+    public void updateTrainingGroupById(Long id, TrainingGroupDTO trainingGroupUpdated) {
         boolean exists = trainingGroupRepository.existsById(id);
 
         if (!exists) {
@@ -50,6 +61,24 @@ public class TrainingGroupService {
         }
         if (trainingGroupUpdated.getDescription() != null) {
             trainingGroup.setDescription(trainingGroupUpdated.getDescription());
+        }
+        if (trainingGroupUpdated.getTrainers() != null) {
+            List<User> trainers = trainingGroupUpdated.getTrainers()
+                    .stream()
+                    .map(trainerDTO -> userRepository.findById(trainerDTO.getId())
+                            .orElseThrow(() -> new IllegalStateException("Trainer not found with ID: " + trainerDTO.getId())))
+                    .collect(Collectors.toList());
+
+            trainingGroup.setTrainers(trainers);
+        }
+        if (trainingGroupUpdated.getStudents() != null) {
+            List<User> students = trainingGroupUpdated.getStudents()
+                    .stream()
+                    .map(studentDTO -> userRepository.findById(studentDTO.getId())
+                            .orElseThrow(() -> new IllegalStateException("Student not found with ID: " + studentDTO.getId())))
+                    .collect(Collectors.toList());
+
+            trainingGroup.setTrainers(students);
         }
 
         trainingGroup.setId(id);

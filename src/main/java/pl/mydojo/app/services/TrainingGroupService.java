@@ -46,45 +46,39 @@ public class TrainingGroupService {
         trainingGroupRepository.save(trainingGroup);
     }
 
-    //TODO poprawić na nowych studentów i trenerów jako tylko ID
-//    public void updateTrainingGroupById(Long id, TrainingGroupDTO trainingGroupUpdated) {
-//        boolean exists = trainingGroupRepository.existsById(id);
-//
-//        if (!exists) {
-//            throw new IllegalStateException("Training Group with provided ID: " + id + " does not exists.");
-//        }
-//
-//        TrainingGroup trainingGroup = new TrainingGroup();
-//
-//        if (trainingGroupUpdated.getName() != null) {
-//            trainingGroup.setName(trainingGroupUpdated.getName());
-//        }
-//        if (trainingGroupUpdated.getDescription() != null) {
-//            trainingGroup.setDescription(trainingGroupUpdated.getDescription());
-//        }
-//        if (trainingGroupUpdated.getTrainers() != null) {
-//            List<User> trainers = trainingGroupUpdated.getTrainers()
-//                    .stream()
-//                    .map(trainerDTO -> userRepository.findById(trainerDTO.getId())
-//                            .orElseThrow(() -> new IllegalStateException("Trainer not found with ID: " + trainerDTO.getId())))
-//                    .collect(Collectors.toList());
-//
-//            trainingGroup.setTrainers(trainers);
-//        }
-//        if (trainingGroupUpdated.getStudents() != null) {
-//            List<User> students = trainingGroupUpdated.getStudents()
-//                    .stream()
-//                    .map(studentDTO -> userRepository.findById(studentDTO.getId())
-//                            .orElseThrow(() -> new IllegalStateException("Student not found with ID: " + studentDTO.getId())))
-//                    .collect(Collectors.toList());
-//
-//            trainingGroup.setTrainers(students);
-//        }
-//
-//        trainingGroup.setId(id);
-//
-//        trainingGroupRepository.save(trainingGroup);
-//    }
+    public void updateTrainingGroupById(Long id, TrainingGroupDTO trainingGroupUpdated) {
+
+        TrainingGroup trainingGroup = trainingGroupRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Training Group with provided ID: " + id + " not found."));
+
+
+        if (trainingGroupUpdated.getName() != null) {
+            trainingGroup.setName(trainingGroupUpdated.getName());
+        }
+        if (trainingGroupUpdated.getDescription() != null) {
+            trainingGroup.setDescription(trainingGroupUpdated.getDescription());
+        }
+        if (trainingGroupUpdated.getTrainers() != null) {
+            List<User> trainers = trainingGroupUpdated.getTrainers()
+                    .stream()
+                    .map(trainerDTO -> userRepository.findById(trainerDTO)
+                            .orElseThrow(() -> new IllegalStateException("Trainer not found with ID: " + trainerDTO)))
+                    .collect(Collectors.toList());
+
+            trainingGroup.setTrainers(trainers);
+        }
+        if (trainingGroupUpdated.getStudents() != null) {
+            List<User> students = trainingGroupUpdated.getStudents()
+                    .stream()
+                    .map(studentDTO -> userRepository.findById(studentDTO)
+                            .orElseThrow(() -> new IllegalStateException("Student not found with ID: " + studentDTO)))
+                    .collect(Collectors.toList());
+
+            trainingGroup.setStudents(students);
+        }
+
+        trainingGroupRepository.save(trainingGroup);
+    }
 
     public void deleteTrainingGroupById(Long id) {
         boolean exists = trainingGroupRepository.existsById(id);

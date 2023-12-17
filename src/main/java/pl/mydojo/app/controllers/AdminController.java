@@ -1,9 +1,10 @@
 package pl.mydojo.app.controllers;
 
 import org.springframework.web.bind.annotation.*;
-import pl.mydojo.app.dto.UserProfileAdminDTO;
-import pl.mydojo.app.dto.UserProfileDTO;
+import pl.mydojo.app.dto.*;
+import pl.mydojo.app.entities.TrainingGroup;
 import pl.mydojo.app.entities.User;
+import pl.mydojo.app.services.TrainingGroupService;
 import pl.mydojo.app.services.UserService;
 
 import java.time.LocalDateTime;
@@ -15,9 +16,12 @@ import java.util.List;
 public class AdminController {
 
     private final UserService userService;
+    private final TrainingGroupService trainingGroupService;
 
-    public AdminController(UserService userService) {
+    public AdminController(UserService userService,
+                           TrainingGroupService trainingGroupService) {
         this.userService = userService;
+        this.trainingGroupService = trainingGroupService;
     }
 
     @GetMapping("/test")
@@ -42,6 +46,8 @@ public class AdminController {
                 .build();
     }
 
+
+    // --------------- USERS -------------------- \\
     @GetMapping("/users")
     public List<UserProfileAdminDTO> getUsers() {
         return userService.getUsersProfileAdmin();
@@ -67,5 +73,44 @@ public class AdminController {
     public void deleteUserById(@PathVariable Long id) {
         userService.deleteUserById(id);
     }
+
+
+// --------------- TRAINING GROUPS -------------------- \\
+
+    @GetMapping("/trainingGroups")
+    public List<TrainingGroupDTO> getTrainingGroups() {
+        return trainingGroupService.getTrainingGroups();
+    }
+
+    @PostMapping("/trainingGroups")
+    public void postTrainingGroup(@RequestBody TrainingGroupDTO trainingGroupDTO) {
+        trainingGroupService.addNewTrainingGroup(trainingGroupDTO);
+    }
+
+    @PutMapping("/trainingGroups/{id}")
+    public void putTrainingGroupById(@PathVariable Long id,
+                                     @RequestBody TrainingGroupDTO trainingGroupDTO) {
+        trainingGroupService.updateTrainingGroupById(id, trainingGroupDTO);
+    }
+
+    @DeleteMapping("/trainingGroups/{id}")
+    public void deleteTrainingGroupById(@PathVariable Long id) {
+        trainingGroupService.deleteTrainingGroupById(id);
+    }
+
+    // --------------- TRAINERS -------------------- \\
+    @GetMapping("/trainers")
+    public List<TrainerProfileDTO> getTrainers() {
+
+        return userService.getTrainersProfile();
+    }
+
+    // --------------- STUDENTS -------------------- \\
+    @GetMapping("/students")
+    public List<StudentProfileDTO> getStudents() {
+
+        return userService.getStudentsProfile();
+    }
+
 
 }

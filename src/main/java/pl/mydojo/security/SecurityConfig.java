@@ -34,7 +34,6 @@ public class SecurityConfig {
         this.userService = userService;
     }
 
-
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();

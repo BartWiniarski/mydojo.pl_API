@@ -41,6 +41,7 @@ public class TrainingGroupService {
         TrainingGroup trainingGroup = TrainingGroup.builder()
                 .name(trainingGroupDTO.getName())
                 .description(trainingGroupDTO.getDescription())
+                .schedule(trainingGroupDTO.getSchedule())
                 .build();
 
         trainingGroupRepository.save(trainingGroup);
@@ -75,6 +76,9 @@ public class TrainingGroupService {
                     .collect(Collectors.toList());
 
             trainingGroup.setStudents(students);
+        }
+        if (trainingGroupUpdated.getSchedule() != null){
+            trainingGroup.setSchedule(trainingGroupUpdated.getSchedule());
         }
 
         trainingGroupRepository.save(trainingGroup);

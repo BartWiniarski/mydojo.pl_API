@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthenticationResponse {
-
     private String token;
     private List<String> roles;
+    private String firstName;
 }

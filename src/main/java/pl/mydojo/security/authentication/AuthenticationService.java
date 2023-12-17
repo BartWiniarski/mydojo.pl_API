@@ -12,7 +12,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,8 +55,13 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .roles(assignedRoles)
                 .build();
+
         userService.addNewUser(user);
-        String jwtToken = jwtService.generateToken(user);
+
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("firstName", user.getFirstName());
+
+        String jwtToken = jwtService.generateToken(extraClaims, user);
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
@@ -70,9 +77,9 @@ public class AuthenticationService {
         );
 
         User user = userService.getUserByEmail(request.getEmail());
-        List<Role> assignedRoles = userService.getUserRoles(user.getId());
         String jwtToken = jwtService.generateToken(user);
 
+        List<Role> assignedRoles = userService.getUserRoles(user.getId());
         List<String> roles = assignedRoles
                 .stream()
                 .map(role -> role.getType().name())
@@ -80,6 +87,7 @@ public class AuthenticationService {
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .firstName(user.getFirstName())
                 .roles(roles)
                 .build();
     }

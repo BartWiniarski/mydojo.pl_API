@@ -16,13 +16,16 @@ public class TrainingGroupService {
 
     private final TrainingGroupRepository trainingGroupRepository;
     private final TrainingGroupDTOMapper trainingGroupDTOMapper;
+    private final UserService userService;
     private final UserRepository userRepository;
 
     public TrainingGroupService(TrainingGroupRepository trainingGroupRepository,
                                 TrainingGroupDTOMapper trainingGroupDTOMapper,
+                                UserService userService,
                                 UserRepository userRepository) {
         this.trainingGroupRepository = trainingGroupRepository;
         this.trainingGroupDTOMapper = trainingGroupDTOMapper;
+        this.userService = userService;
         this.userRepository = userRepository;
     }
 
@@ -41,6 +44,7 @@ public class TrainingGroupService {
         TrainingGroup trainingGroup = TrainingGroup.builder()
                 .name(trainingGroupDTO.getName())
                 .description(trainingGroupDTO.getDescription())
+                .schedule(trainingGroupDTO.getSchedule())
                 .build();
 
         trainingGroupRepository.save(trainingGroup);
@@ -76,6 +80,9 @@ public class TrainingGroupService {
 
             trainingGroup.setStudents(students);
         }
+        if (trainingGroupUpdated.getSchedule() != null) {
+            trainingGroup.setSchedule(trainingGroupUpdated.getSchedule());
+        }
 
         trainingGroupRepository.save(trainingGroup);
     }
@@ -89,7 +96,29 @@ public class TrainingGroupService {
 
         trainingGroupRepository.deleteById(id);
     }
+
+    public List<TrainingGroupDTO> getStudentTrainingGroups(String userEmailFromToken) {
+        User user = userService.getUserByEmail(userEmailFromToken);
+
+        List<TrainingGroup> trainingGroups = trainingGroupRepository.findAllByStudentsId(user.getId());
+
+        return trainingGroups.stream()
+                .map(u -> trainingGroupDTOMapper.apply(u))
+                .collect(Collectors.toList());
+    }
+
+    public List<TrainingGroupDTO> getTrainerTrainingGroups(String userEmailFromToken) {
+        User user = userService.getUserByEmail(userEmailFromToken);
+
+        List<TrainingGroup> trainingGroups = trainingGroupRepository.findAllByTrainersId(user.getId());
+
+        return trainingGroups.stream()
+                .map(u -> trainingGroupDTOMapper.apply(u))
+                .collect(Collectors.toList());
+    }
 }
+
+
 
 
 

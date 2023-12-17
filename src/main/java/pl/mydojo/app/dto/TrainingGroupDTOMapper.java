@@ -36,6 +36,7 @@ public class TrainingGroupDTOMapper implements Function<TrainingGroup, TrainingG
                 trainingGroup.getId(),
                 trainingGroup.getName(),
                 trainingGroup.getDescription(),
+                trainingGroup.getSchedule(),
                 students,
                 trainers
         );

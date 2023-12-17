@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Entity
@@ -19,10 +21,15 @@ public class TrainingGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
     private String description;
-    private LocalTime date;
+
+    @ElementCollection
+    @CollectionTable(name = "training_group_schedule", joinColumns = @JoinColumn(name = "training_group_id"))
+    @MapKeyColumn(name = "day_of_week")
+    @Column(name = "time")
+    private Map<DayOfWeek, LocalTime> schedule = new HashMap<>();
+
 
     @ManyToMany
     @JoinTable(

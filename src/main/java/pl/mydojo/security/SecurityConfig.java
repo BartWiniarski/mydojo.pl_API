@@ -34,7 +34,6 @@ public class SecurityConfig {
         this.userService = userService;
     }
 
-
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -62,6 +61,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/users/**").hasAnyRole ("ADMIN","TRAINER","STUDENT")
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/student/**").hasRole("STUDENT")
+                        .requestMatchers("/api/v1/trainer/**").hasRole("TRAINER")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

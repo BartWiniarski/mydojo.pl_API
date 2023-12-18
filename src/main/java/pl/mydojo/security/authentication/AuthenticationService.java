@@ -1,5 +1,6 @@
 package pl.mydojo.security.authentication;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.mydojo.security.registration.RegisterRequest;
 
+import java.io.IOException;
 import java.net.http.HttpHeaders;
 import java.util.ArrayList;
 import java.util.List;
@@ -115,9 +117,9 @@ public class AuthenticationService {
                 .build();
     }
 
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response) {
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        final String authenticationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        final String authenticationHeader = request.getHeader("Authorization");
         final String refreshToken;
         final String userEmail;
 
@@ -135,9 +137,11 @@ public class AuthenticationService {
                 String accessToken = jwtService.generateAccessToken(user);
                 AuthenticationResponse authenticationResponse =
                         AuthenticationResponse.builder()
+                                .message("New authentication token created")
                                 .accessToken(accessToken)
                                 .refreshToken(refreshToken)
                                 .build();
+                new ObjectMapper().writeValue(response.getOutputStream(),authenticationResponse);
             }
         }
     }

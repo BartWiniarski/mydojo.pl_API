@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import pl.mydojo.security.registration.RegisterRequest;
 import pl.mydojo.security.registration.RegisterResponse;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthenticationController {
@@ -31,7 +33,7 @@ public class AuthenticationController {
 
     // @RequestHeader("Authorization") String token może lepiej to? sprawdź
     @PostMapping("/refresh")
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response) {
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         authenticationService.refreshToken(request,response);
     }
 }

@@ -17,6 +17,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import pl.mydojo.app.services.UserService;
+import pl.mydojo.security.authentication.CustomAccessDeniedHandler;
+import pl.mydojo.security.authentication.CustomAuthenticationEntryPoint;
 import pl.mydojo.security.jwt.JwtAuthenticationFilter;
 
 import static pl.mydojo.app.entities.RoleType.ADMIN;
@@ -64,7 +66,13 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/trainer/**").hasRole("TRAINER")
                         .anyRequest().authenticated()
                 )
-                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(exception -> exception
+                        .accessDeniedHandler(new CustomAccessDeniedHandler())
+                        .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                )
+                .sessionManagement(sess -> sess
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .csrf((csrf) -> csrf.disable());

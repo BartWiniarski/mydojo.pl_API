@@ -1,5 +1,7 @@
 package pl.mydojo.app.controllers;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.mydojo.app.dto.*;
 import pl.mydojo.app.entities.TrainingGroup;
@@ -54,8 +56,10 @@ public class AdminController {
     }
 
     @PostMapping("/users")
-    public void postUser(@RequestBody UserProfileAdminDTO userProfileAdminDTO) {
+    public ResponseEntity<?> postUser(@RequestBody UserProfileAdminDTO userProfileAdminDTO) {
         userService.addUserProfileAdmin(userProfileAdminDTO);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("User added");
+
     }
 
     @GetMapping("/users/{id}")
@@ -70,8 +74,10 @@ public class AdminController {
     }
 
     @DeleteMapping("/users/{id}")
-    public void deleteUserById(@PathVariable Long id) {
+    public ResponseEntity<?> deleteUserById(@PathVariable Long id) {
         userService.deleteUserById(id);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("User with id: " + id + " deleted");
     }
 
 

@@ -99,6 +99,7 @@ public class AuthenticationService {
                 .collect(Collectors.toList());
 
         return AuthenticationResponse.builder()
+                .message("Authentication successful")
                 .token(jwtToken)
                 .firstName(user.getFirstName())
                 .roles(roles)

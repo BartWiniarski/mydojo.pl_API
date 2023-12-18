@@ -1,5 +1,6 @@
 package pl.mydojo.exceptions;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,9 +17,13 @@ public class AuthenticationExceptionHandler {
         Map<String, Object> response = new HashMap<>();
         response.put("error", "authentication-001");
         response.put("message", e.getMessage());
-        response.put("status", HttpStatus.FORBIDDEN.value());
+        response.put("status", HttpStatus.UNAUTHORIZED.value());
 
-        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
+
+    //authentication-002 in JwtAuthenticationFilter
+    //authentication-003 in CustomAccessDeniedHandler
+    //authentication-004 in CustomAuthenticationEntryPoint
 
 }

@@ -1,5 +1,6 @@
 package pl.mydojo.security.jwt;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,33 +33,45 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        final String authenticationHeader = request.getHeader("Authorization");
-        final String jwtToken;
-        final String userEmail;
+        try {
+            final String authenticationHeader = request.getHeader("Authorization");
+            final String jwtToken;
+            final String userEmail;
 
-        if (authenticationHeader == null || !authenticationHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
+            if (authenticationHeader == null || !authenticationHeader.startsWith("Bearer ")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            jwtToken = authenticationHeader.substring(7);
+            userEmail = jwtService.extractUsername(jwtToken);
+
+            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+
+                if (jwtService.isTokenValid(jwtToken, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+                    authToken.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(request)
+                    );
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            }
+        } catch (ExpiredJwtException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write(
+                    "{" +
+                            "\"error\": \"authentication-002\"," +
+                            "\"message\": \"Token expired\"," +
+                            "\"status\": 401" +
+                            "}");
             return;
         }
-
-        jwtToken = authenticationHeader.substring(7);
-        userEmail = jwtService.extractUsername(jwtToken);
-
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-
-            if (jwtService.isTokenValid(jwtToken, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
-                  authToken.setDetails(
-                          new WebAuthenticationDetailsSource().buildDetails(request)
-                  );
-                  SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
-        }
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
 }

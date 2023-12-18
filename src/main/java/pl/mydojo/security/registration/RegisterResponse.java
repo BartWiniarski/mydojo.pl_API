@@ -1,4 +1,4 @@
-package pl.mydojo.security.authentication;
+package pl.mydojo.security.registration;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,4 +12,5 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class RegisterResponse {
     private String message;
+    private String token;
 }

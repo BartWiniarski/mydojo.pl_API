@@ -9,11 +9,10 @@ import pl.mydojo.app.entities.Role;
 import pl.mydojo.app.entities.RoleType;
 import pl.mydojo.app.entities.User;
 import pl.mydojo.app.repositories.UserRepository;
-import pl.mydojo.exceptions.UserAlreadyTakenException;
-import pl.mydojo.exceptions.UserNotFoundException;
+import pl.mydojo.exceptions.user.UserAlreadyTakenException;
+import pl.mydojo.exceptions.user.UserNotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -48,24 +47,10 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    public User getUserById(Long id) {
-        return userRepository.getReferenceById(id);
-    }
-
     public User getUserByEmail(String email) {
 
         return userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(email));
-
-    }
-
-    public void updateUser(User user) {
-        Long id = user.getId();
-
-        if (!userRepository.existsById(id)) {
-            throw new UserNotFoundException(id);
-        }
-        userRepository.save(user);
     }
 
     public void deleteUserById(Long id) {
@@ -96,7 +81,7 @@ public class UserService implements UserDetailsService {
             user.setDob(userProfileDTO.getDob());
         }
 
-        updateUser(user);
+        userRepository.save(user);
     }
 
 
@@ -109,7 +94,7 @@ public class UserService implements UserDetailsService {
                 .collect(Collectors.toList());
     }
 
-    public void addUserProfileAdmin(UserProfileAdminDTO userProfileAdminDTO) {
+    public User addUserProfileAdmin(UserProfileAdminDTO userProfileAdminDTO) {
         String email = userProfileAdminDTO.getEmail();
 
         if (userRepository.findUserByEmail(email).isPresent()) {
@@ -124,16 +109,25 @@ public class UserService implements UserDetailsService {
                 .roles(userProfileAdminDTO.getRoles())
                 .build();
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     public UserProfileAdminDTO getUserProfileAdminById(Long id) {
-        User user = userRepository.findUserById(id);
 
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException(id);
+        }
+
+        User user = userRepository.findUserById(id);
         return userProfileAdminDTOMapper.apply(user);
     }
 
     public void updateUserProfileAdminById(Long id, UserProfileAdminDTO userProfileAdminDTO) {
+
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException(id);
+        }
+
         User user = userRepository.findUserById(id);
 
         if (userProfileAdminDTO.getFirstName() != null) {
@@ -152,7 +146,7 @@ public class UserService implements UserDetailsService {
             user.setRoles(userProfileAdminDTO.getRoles());
         }
 
-        updateUser(user);
+        userRepository.save(user);
     }
 
     public List<TrainerProfileDTO> getTrainersProfile() {

@@ -7,6 +7,7 @@ import pl.mydojo.app.entities.TrainingGroup;
 import pl.mydojo.app.entities.User;
 import pl.mydojo.app.repositories.TrainingGroupRepository;
 import pl.mydojo.app.repositories.UserRepository;
+import pl.mydojo.exceptions.trainingGroup.TrainingGroupNotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,7 +40,17 @@ public class TrainingGroupService {
                 .collect(Collectors.toList());
     }
 
-    public void addNewTrainingGroup(TrainingGroupDTO trainingGroupDTO) {
+    public TrainingGroupDTO getTrainingGroupById(Long id) {
+
+        if (!trainingGroupRepository.existsById(id)) {
+            throw new TrainingGroupNotFoundException(id);
+        }
+
+        return trainingGroupDTOMapper.apply(
+                trainingGroupRepository.findTrainingGroupById(id));
+    }
+
+    public TrainingGroup addNewTrainingGroup(TrainingGroupDTO trainingGroupDTO) {
 
         TrainingGroup trainingGroup = TrainingGroup.builder()
                 .name(trainingGroupDTO.getName())
@@ -47,14 +58,16 @@ public class TrainingGroupService {
                 .schedule(trainingGroupDTO.getSchedule())
                 .build();
 
-        trainingGroupRepository.save(trainingGroup);
+        return trainingGroupRepository.save(trainingGroup);
     }
 
     public void updateTrainingGroupById(Long id, TrainingGroupDTO trainingGroupUpdated) {
 
-        TrainingGroup trainingGroup = trainingGroupRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Training Group with provided ID: " + id + " not found."));
+        if (!trainingGroupRepository.existsById(id)) {
+            throw new TrainingGroupNotFoundException(id);
+        }
 
+        TrainingGroup trainingGroup = trainingGroupRepository.findTrainingGroupById(id);
 
         if (trainingGroupUpdated.getName() != null) {
             trainingGroup.setName(trainingGroupUpdated.getName());
@@ -88,10 +101,9 @@ public class TrainingGroupService {
     }
 
     public void deleteTrainingGroupById(Long id) {
-        boolean exists = trainingGroupRepository.existsById(id);
 
-        if (!exists) {
-            throw new IllegalStateException("Training Group with provided ID: " + id + " does not exists.");
+        if (!trainingGroupRepository.existsById(id)) {
+            throw new TrainingGroupNotFoundException(id);
         }
 
         trainingGroupRepository.deleteById(id);

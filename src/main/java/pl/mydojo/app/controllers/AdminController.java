@@ -57,9 +57,12 @@ public class AdminController {
 
     @PostMapping("/users")
     public ResponseEntity<?> postUser(@RequestBody UserProfileAdminDTO userProfileAdminDTO) {
-        userService.addUserProfileAdmin(userProfileAdminDTO);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body("User added");
+        User newUser = userService
+                .addUserProfileAdmin(userProfileAdminDTO);
 
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body("User added with id: " + newUser.getId());
     }
 
     @GetMapping("/users/{id}")
@@ -68,9 +71,11 @@ public class AdminController {
     }
 
     @PutMapping("/users/{id}")
-    public void putUserById(@PathVariable Long id,
+    public ResponseEntity<?>  putUserById(@PathVariable Long id,
                             @RequestBody UserProfileAdminDTO userProfileAdminDTO) {
         userService.updateUserProfileAdminById(id, userProfileAdminDTO);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("User with id: " + id + " updated");
     }
 
     @DeleteMapping("/users/{id}")
@@ -88,21 +93,38 @@ public class AdminController {
         return trainingGroupService.getTrainingGroups();
     }
 
+    @GetMapping("/trainingGroups/{id}")
+    public TrainingGroupDTO getTrainingGroups(@PathVariable Long id) {
+        return trainingGroupService.getTrainingGroupById(id);
+    }
+
     @PostMapping("/trainingGroups")
-    public void postTrainingGroup(@RequestBody TrainingGroupDTO trainingGroupDTO) {
-        trainingGroupService.addNewTrainingGroup(trainingGroupDTO);
+    public ResponseEntity<?> postTrainingGroup(@RequestBody TrainingGroupDTO trainingGroupDTO) {
+        TrainingGroup newTrainingGroup = trainingGroupService
+                .addNewTrainingGroup(trainingGroupDTO);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body("Training group added with ID: " + newTrainingGroup.getId());
     }
 
     @PutMapping("/trainingGroups/{id}")
-    public void putTrainingGroupById(@PathVariable Long id,
-                                     @RequestBody TrainingGroupDTO trainingGroupDTO) {
+    public ResponseEntity<?> putTrainingGroupById(@PathVariable Long id,
+                                                       @RequestBody TrainingGroupDTO trainingGroupDTO) {
         trainingGroupService.updateTrainingGroupById(id, trainingGroupDTO);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body("Training group with id: " + id + " updated");
     }
 
     @DeleteMapping("/trainingGroups/{id}")
-    public void deleteTrainingGroupById(@PathVariable Long id) {
+    public ResponseEntity<?> deleteTrainingGroupById(@PathVariable Long id) {
         trainingGroupService.deleteTrainingGroupById(id);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body("Training group with id: " + id + " deleted");
     }
+
 
     // --------------- TRAINERS -------------------- \\
     @GetMapping("/trainers")

@@ -1,4 +1,4 @@
-package pl.mydojo.exceptions;
+package pl.mydojo.exceptions.user;
 
 public class UserAlreadyTakenException extends RuntimeException{
 

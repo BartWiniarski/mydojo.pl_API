@@ -7,9 +7,8 @@ import pl.mydojo.app.entities.User;
 import pl.mydojo.app.repositories.RoleRepository;
 import pl.mydojo.app.repositories.UserRepository;
 import pl.mydojo.app.services.UserService;
-import pl.mydojo.exceptions.BadAuthenticationException;
-import pl.mydojo.exceptions.UserAlreadyTakenException;
-import pl.mydojo.exceptions.UserNotFoundException;
+import pl.mydojo.exceptions.authentication.BadAuthenticationException;
+import pl.mydojo.exceptions.user.UserAlreadyTakenException;
 import pl.mydojo.security.jwt.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,9 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service

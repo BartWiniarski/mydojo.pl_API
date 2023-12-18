@@ -1,4 +1,4 @@
-package pl.mydojo.exceptions;
+package pl.mydojo.exceptions.authentication;
 
 public class BadAuthenticationException extends RuntimeException{
 

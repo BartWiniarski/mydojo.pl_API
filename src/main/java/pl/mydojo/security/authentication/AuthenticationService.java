@@ -117,17 +117,16 @@ public class AuthenticationService {
                 .build();
     }
 
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public RefreshResponse refreshToken(String token) throws IOException {
 
-        final String authenticationHeader = request.getHeader("Authorization");
         final String refreshToken;
         final String userEmail;
 
-        if (authenticationHeader == null || !authenticationHeader.startsWith("Bearer ")) {
-            return;
+        if (token == null || !token.startsWith("Bearer ")) {
+            throw new BadAuthenticationException();
         }
 
-        refreshToken = authenticationHeader.substring(7);
+        refreshToken = token.substring(7);
         userEmail = jwtService.extractUsername(refreshToken);
 
         if (userEmail != null) {
@@ -135,15 +134,14 @@ public class AuthenticationService {
 
             if (jwtService.isTokenValid(refreshToken, user)) {
                 String accessToken = jwtService.generateAccessToken(user);
-                AuthenticationResponse authenticationResponse =
-                        AuthenticationResponse.builder()
-                                .message("New authentication token created")
-                                .accessToken(accessToken)
-                                .refreshToken(refreshToken)
-                                .build();
-                new ObjectMapper().writeValue(response.getOutputStream(),authenticationResponse);
+
+                return RefreshResponse.builder()
+                        .message("New access token created")
+                        .accessToken(accessToken)
+                        .build();
             }
         }
+        throw new BadAuthenticationException();
     }
 }
 

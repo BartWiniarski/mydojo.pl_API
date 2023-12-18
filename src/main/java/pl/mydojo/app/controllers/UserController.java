@@ -1,5 +1,6 @@
 package pl.mydojo.app.controllers;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.mydojo.app.dto.UserProfileDTO;
@@ -26,12 +27,14 @@ public class UserController {
 
     @PutMapping("/profile")
     public ResponseEntity<?> putUserProfile(@RequestHeader("Authorization") String token,
-                                             @RequestBody UserProfileDTO userProfileDTO) {
+                                            @RequestBody UserProfileDTO userProfileDTO) {
 
         String userEmailFromToken = jwtService.extractUsername(token.substring(7));
         userService.updateUserProfile(userEmailFromToken, userProfileDTO);
 
-        return ResponseEntity.ok("User profile updated");
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .body("User profile updated");
     }
 }
 

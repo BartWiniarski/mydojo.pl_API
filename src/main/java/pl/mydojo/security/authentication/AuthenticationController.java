@@ -1,12 +1,9 @@
 package pl.mydojo.security.authentication;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.mydojo.app.dto.UserProfileAdminDTO;
-import pl.mydojo.app.services.UserService;
-
-import java.util.List;
+import pl.mydojo.security.registration.RegisterRequest;
+import pl.mydojo.security.registration.RegisterResponse;
 
 @RestController
 @RequestMapping("/api/v1/auth")

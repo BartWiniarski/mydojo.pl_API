@@ -1,4 +1,4 @@
-package pl.mydojo.security.authentication;
+package pl.mydojo.security.registration;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

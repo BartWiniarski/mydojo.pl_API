@@ -7,6 +7,7 @@ import pl.mydojo.app.entities.TrainingGroup;
 import pl.mydojo.app.entities.User;
 import pl.mydojo.app.repositories.TrainingGroupRepository;
 import pl.mydojo.app.repositories.UserRepository;
+import pl.mydojo.exceptions.trainingGroup.NotAssignedToTrainingGroupException;
 import pl.mydojo.exceptions.trainingGroup.TrainingGroupNotFoundException;
 
 import java.util.List;
@@ -109,10 +110,17 @@ public class TrainingGroupService {
         trainingGroupRepository.deleteById(id);
     }
 
+
+    //------------------ STUDENTS AND TRAINERS ------------------\\
     public List<TrainingGroupDTO> getStudentTrainingGroups(String userEmailFromToken) {
         User user = userService.getUserByEmail(userEmailFromToken);
 
-        List<TrainingGroup> trainingGroups = trainingGroupRepository.findAllByStudentsId(user.getId());
+        List<TrainingGroup> trainingGroups = trainingGroupRepository
+                .findAllByStudentsId(user.getId());
+
+        if (trainingGroups.isEmpty()) {
+            throw new NotAssignedToTrainingGroupException();
+        }
 
         return trainingGroups.stream()
                 .map(u -> trainingGroupDTOMapper.apply(u))
@@ -122,7 +130,12 @@ public class TrainingGroupService {
     public List<TrainingGroupDTO> getTrainerTrainingGroups(String userEmailFromToken) {
         User user = userService.getUserByEmail(userEmailFromToken);
 
-        List<TrainingGroup> trainingGroups = trainingGroupRepository.findAllByTrainersId(user.getId());
+        List<TrainingGroup> trainingGroups = trainingGroupRepository
+                .findAllByTrainersId(user.getId());
+
+        if (trainingGroups.isEmpty()) {
+            throw new NotAssignedToTrainingGroupException();
+        }
 
         return trainingGroups.stream()
                 .map(u -> trainingGroupDTOMapper.apply(u))

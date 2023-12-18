@@ -9,6 +9,8 @@ import pl.mydojo.app.entities.Role;
 import pl.mydojo.app.entities.RoleType;
 import pl.mydojo.app.entities.User;
 import pl.mydojo.app.repositories.UserRepository;
+import pl.mydojo.exceptions.UserAlreadyTakenException;
+import pl.mydojo.exceptions.UserNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,12 +40,10 @@ public class UserService implements UserDetailsService {
 
     //------------------ USER CRUD ------------------\\
     public void addNewUser(User user) {
+        String email = user.getEmail();
 
-        Optional<User> userByEmail =
-                userRepository.findUserByEmail(user.getEmail());
-
-        if (userByEmail.isPresent()) {
-            throw new IllegalStateException("User with provided e-mail already exists.");
+        if (userRepository.findUserByEmail(email).isPresent()) {
+            throw new UserAlreadyTakenException(email);
         }
         userRepository.save(user);
     }
@@ -53,28 +53,25 @@ public class UserService implements UserDetailsService {
     }
 
     public User getUserByEmail(String email) {
-        final String USER_WITH_E_MAIL_NOT_FOUND = "User with e-mail %s not found";
 
         return userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_WITH_E_MAIL_NOT_FOUND, email)));
-        //TODO exception handling
+                .orElseThrow(() -> new UserNotFoundException(email));
+
     }
 
     public void updateUser(User user) {
         Long id = user.getId();
-        boolean exists = userRepository.existsById(id);
 
-        if (!exists) {
-            throw new IllegalStateException("User with provided ID: " + id + " does not exists.");
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException(id);
         }
         userRepository.save(user);
     }
 
     public void deleteUserById(Long id) {
-        boolean exists = userRepository.existsById(id);
 
-        if (!exists) {
-            throw new IllegalStateException("User with provided ID: " + id + " does not exists.");
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException(id);
         }
         userRepository.deleteById(id);
     }
@@ -113,11 +110,10 @@ public class UserService implements UserDetailsService {
     }
 
     public void addUserProfileAdmin(UserProfileAdminDTO userProfileAdminDTO) {
-        Optional<User> userByEmail =
-                userRepository.findUserByEmail(userProfileAdminDTO.getEmail());
+        String email = userProfileAdminDTO.getEmail();
 
-        if (userByEmail.isPresent()) {
-            throw new IllegalStateException("User with provided e-mail already exists.");
+        if (userRepository.findUserByEmail(email).isPresent()) {
+            throw new UserAlreadyTakenException(email);
         }
 
         User user = User.builder()

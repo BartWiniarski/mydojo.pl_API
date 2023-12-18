@@ -12,4 +12,5 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class RegisterResponse {
     private String message;
+    private String token;
 }

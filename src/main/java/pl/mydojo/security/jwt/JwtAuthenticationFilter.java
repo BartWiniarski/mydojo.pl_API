@@ -35,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             final String authenticationHeader = request.getHeader("Authorization");
-            final String jwtToken;
+            final String accessToken;
             final String userEmail;
 
             if (authenticationHeader == null || !authenticationHeader.startsWith("Bearer ")) {
@@ -43,13 +43,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            jwtToken = authenticationHeader.substring(7);
-            userEmail = jwtService.extractUsername(jwtToken);
+            accessToken = authenticationHeader.substring(7);
+            userEmail = jwtService.extractUsername(accessToken);
 
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
-                if (jwtService.isTokenValid(jwtToken, userDetails)) {
+                if (jwtService.isTokenValid(accessToken, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
                             null,
@@ -67,7 +67,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.getWriter().write(
                     "{" +
                             "\"error\": \"authentication-002\"," +
-                            "\"message\": \"Token expired\"," +
+                            "\"message\": \"Access token expired\"," +
                             "\"status\": 401" +
                             "}");
             return;

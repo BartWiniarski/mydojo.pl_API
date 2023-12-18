@@ -1,6 +1,13 @@
 package pl.mydojo.security.authentication;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import pl.mydojo.app.entities.Role;
 import pl.mydojo.app.entities.RoleType;
 import pl.mydojo.app.entities.User;
@@ -16,6 +23,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.mydojo.security.registration.RegisterRequest;
 
+import java.io.IOException;
+import java.net.http.HttpHeaders;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,7 +44,7 @@ public class AuthenticationService {
                                  UserRepository userRepository,
                                  PasswordEncoder passwordEncoder,
                                  JwtService jwtService,
-                                 AuthenticationManager authenticationManager){
+                                 AuthenticationManager authenticationManager) {
         this.userService = userService;
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
@@ -55,7 +64,7 @@ public class AuthenticationService {
         Role roleStudent = roleRepository.findByType(RoleType.STUDENT)
                 .orElseThrow(() -> new RuntimeException("Role not found"));
 
-        List<Role> assignedRoles = new ArrayList<>(){{
+        List<Role> assignedRoles = new ArrayList<>() {{
             add(roleStudent);
         }};
 
@@ -69,10 +78,12 @@ public class AuthenticationService {
                 .build();
 
         userService.addNewUser(user);
-        String jwtToken = jwtService.generateToken( user);
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
 
         return AuthenticationResponse.builder()
-                .token(jwtToken)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .build();
     }
 
@@ -88,7 +99,8 @@ public class AuthenticationService {
             throw new BadAuthenticationException();
         }
         User user = userService.getUserByEmail(request.getEmail());
-        String jwtToken = jwtService.generateToken(user);
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
 
         List<Role> assignedRoles = userService.getUserRoles(user.getId());
         List<String> roles = assignedRoles
@@ -98,9 +110,39 @@ public class AuthenticationService {
 
         return AuthenticationResponse.builder()
                 .message("Authentication successful")
-                .token(jwtToken)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .firstName(user.getFirstName())
                 .roles(roles)
                 .build();
     }
+
+    public RefreshResponse refreshToken(String token) throws IOException {
+
+        final String refreshToken;
+        final String userEmail;
+
+        if (token == null || !token.startsWith("Bearer ")) {
+            throw new BadAuthenticationException();
+        }
+
+        refreshToken = token.substring(7);
+        userEmail = jwtService.extractUsername(refreshToken);
+
+        if (userEmail != null) {
+            User user = this.userRepository.findUserByEmail(userEmail).orElseThrow();
+
+            if (jwtService.isTokenValid(refreshToken, user)) {
+                String accessToken = jwtService.generateAccessToken(user);
+
+                return RefreshResponse.builder()
+                        .message("New access token created")
+                        .accessToken(accessToken)
+                        .build();
+            }
+        }
+        throw new BadAuthenticationException();
+    }
 }
+
+                       

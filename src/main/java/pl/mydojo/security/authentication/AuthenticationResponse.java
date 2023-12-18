@@ -1,7 +1,6 @@
 package pl.mydojo.security.authentication;
 
 import lombok.*;
-import pl.mydojo.app.entities.Role;
 
 import java.util.List;
 
@@ -12,7 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 public class AuthenticationResponse {
     private String message;
-    private String token;
+    private String accessToken;
+    private String refreshToken;
     private List<String> roles;
     private String firstName;
 }

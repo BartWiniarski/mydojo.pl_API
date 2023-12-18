@@ -6,12 +6,14 @@ import org.springframework.web.bind.annotation.*;
 import pl.mydojo.app.dto.*;
 import pl.mydojo.app.entities.TrainingGroup;
 import pl.mydojo.app.entities.User;
+import pl.mydojo.app.services.DojoStatusService;
 import pl.mydojo.app.services.TrainingGroupService;
 import pl.mydojo.app.services.UserService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/admin")
@@ -19,11 +21,14 @@ public class AdminController {
 
     private final UserService userService;
     private final TrainingGroupService trainingGroupService;
+    private final DojoStatusService dojoStatusService;
 
     public AdminController(UserService userService,
-                           TrainingGroupService trainingGroupService) {
+                           TrainingGroupService trainingGroupService,
+                           DojoStatusService dojoStatusService) {
         this.userService = userService;
         this.trainingGroupService = trainingGroupService;
+        this.dojoStatusService = dojoStatusService;
     }
 
     @GetMapping("/test")
@@ -140,5 +145,9 @@ public class AdminController {
         return userService.getStudentsProfile();
     }
 
-
+    // --------------- DOJO STATUS -------------------- \\
+    @GetMapping("/dojo/status")
+    public DojoStatusDTO getDojoStatus(){
+        return dojoStatusService.getDojoStatus();
+    }
 }

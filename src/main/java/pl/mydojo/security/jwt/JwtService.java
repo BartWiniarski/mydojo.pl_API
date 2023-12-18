@@ -41,6 +41,7 @@ public class JwtService {
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
+
     }
 
     public boolean isTokenValid(String jwtToken, UserDetails userDetails) {

@@ -19,5 +19,6 @@ public class UserProfileAdminDTO {
     private int age;
     private String email;
     private List<Role> roles;
+    private boolean enabled;
 
 }

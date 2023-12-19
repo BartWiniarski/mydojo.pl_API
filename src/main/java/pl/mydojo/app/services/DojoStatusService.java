@@ -22,8 +22,15 @@ public class DojoStatusService {
         long numberOfStudents = userRepository.countByRole(RoleType.STUDENT);
         long numberOfTrainers = userRepository.countByRole(RoleType.TRAINER);
         long numberOfTrainingGroups = trainingGroupRepository.count();
+        long numberOfEnabledUsers = userRepository.countByEnabled(true);
+        long numberOfDisabledUsers = userRepository.countByEnabled(false);
 
-        return new DojoStatusDTO(numberOfStudents, numberOfTrainers, numberOfTrainingGroups);
+        return new DojoStatusDTO(
+                numberOfStudents,
+                numberOfTrainers,
+                numberOfTrainingGroups,
+                numberOfEnabledUsers,
+                numberOfDisabledUsers);
     }
 
 }

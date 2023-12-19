@@ -8,8 +8,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DojoStatusDTO {
-
     private long numberOfStudents;
     private long numberOfTrainers;
     private long numberOfTrainingGroups;
+    private long numberOfEnabledUsers;
+    private long numberOfDisabledUsers;
 }

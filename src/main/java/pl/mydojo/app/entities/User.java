@@ -26,7 +26,6 @@ public class User implements UserDetails {
     private String firstName;
     private String lastName;
     private LocalDate dob;
-    private int age;
 
     @Column(unique = true)
     private String email;
@@ -64,18 +63,6 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "guardian")
     private List<User> wards;
 
-    @PrePersist
-    @PreUpdate
-    public void calculateAge() {
-        if (dob != null) {
-            LocalDate currentDate = LocalDate.now();
-            if (currentDate.isBefore(dob)) {
-                age = Period.between(dob, currentDate).getYears() - 1;
-            } else {
-                age = Period.between(dob, currentDate).getYears();
-            }
-        }
-    }
 
 //------------------CONSTRUCTORS--------------------\\
 
@@ -85,7 +72,6 @@ public class User implements UserDetails {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dob = dob;
-        this.age = age;
         this.email = email;
         this.password = password;
         this.locked = locked;
@@ -102,7 +88,6 @@ public class User implements UserDetails {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dob = dob;
-        this.age = age;
         this.email = email;
         this.password = password;
         this.locked = locked;

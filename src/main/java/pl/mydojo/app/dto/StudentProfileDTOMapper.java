@@ -2,7 +2,10 @@ package pl.mydojo.app.dto;
 
 import org.springframework.stereotype.Service;
 import pl.mydojo.app.entities.User;
+import pl.mydojo.app.utils.AgeUtil;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.function.Function;
 
 
@@ -12,11 +15,13 @@ public class StudentProfileDTOMapper implements Function<User, StudentProfileDTO
     @Override
     public StudentProfileDTO apply(User user) {
 
+        int age = AgeUtil.calculateAge(user);
+
         return new StudentProfileDTO(
                 user.getId(),
                 user.getFirstName(),
                 user.getLastName(),
-                user.getAge()
+                age
         );
     }
 }

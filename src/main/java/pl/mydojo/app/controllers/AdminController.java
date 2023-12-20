@@ -99,7 +99,6 @@ public class AdminController {
                 .body("User with id: " + id + " status changed to: " + status + ".");
     }
 
-
 // --------------- TRAINING GROUPS -------------------- \\
 
     @GetMapping("/trainingGroups")

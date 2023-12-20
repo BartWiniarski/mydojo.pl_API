@@ -159,3 +159,4 @@ public class AdminController {
         return dojoStatusService.getDojoStatus();
     }
 }
+

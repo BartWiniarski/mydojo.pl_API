@@ -56,7 +56,16 @@ public class TrainingGroupService {
         TrainingGroup trainingGroup = TrainingGroup.builder()
                 .name(trainingGroupDTO.getName())
                 .description(trainingGroupDTO.getDescription())
-//                .schedule(trainingGroupDTO.getSchedule())
+                .trainers(trainingGroupDTO.getTrainersId()
+                        .stream()
+                        .map(trainerDTO -> userRepository.findById(trainerDTO)
+                                .orElseThrow(() -> new IllegalStateException("Trainer not found with ID: " + trainerDTO)))
+                        .collect(Collectors.toList()))
+                .students(trainingGroupDTO.getStudentsId()
+                        .stream()
+                        .map(studentDTO -> userRepository.findById(studentDTO)
+                                .orElseThrow(() -> new IllegalStateException("Student not found with ID: " + studentDTO)))
+                        .collect(Collectors.toList()))
                 .build();
 
         return trainingGroupRepository.save(trainingGroup);
@@ -94,10 +103,6 @@ public class TrainingGroupService {
 
             trainingGroup.setStudents(students);
         }
-//        if (trainingGroupUpdated.getSchedule() != null) {
-//            trainingGroup.setSchedule(trainingGroupUpdated.getSchedule());
-//        }
-
         trainingGroupRepository.save(trainingGroup);
     }
 
@@ -106,7 +111,6 @@ public class TrainingGroupService {
         if (!trainingGroupRepository.existsById(id)) {
             throw new TrainingGroupNotFoundException(id);
         }
-
         trainingGroupRepository.deleteById(id);
     }
 

@@ -10,18 +10,14 @@ import java.util.stream.Collectors;
 @Service
 public class TrainingGroupDTOMapper implements Function<TrainingGroup, TrainingGroupDTO> {
 
-    private final StudentProfileDTOMapper studentProfileDTOMapper;
-    private final TrainerProfileDTOMapper trainerProfileDTOMapper;
-
-    public TrainingGroupDTOMapper(
-            StudentProfileDTOMapper studentProfileDTOMapper,
-            TrainerProfileDTOMapper trainerProfileDTOMapper) {
-        this.studentProfileDTOMapper = studentProfileDTOMapper;
-        this.trainerProfileDTOMapper = trainerProfileDTOMapper;
-    }
 
     @Override
     public TrainingGroupDTO apply(TrainingGroup trainingGroup) {
+        List<Long> schedulesId = trainingGroup.getSchedules()
+                .stream()
+                .map(s-> s.getId())
+                .collect(Collectors.toList());
+
         List<Long> studentsId = trainingGroup.getStudents()
                 .stream()
                 .map(s-> s.getId())
@@ -32,16 +28,14 @@ public class TrainingGroupDTOMapper implements Function<TrainingGroup, TrainingG
                 .map(t -> t.getId())
                 .collect(Collectors.toList());
 
-//        long venueId = trainingGroup.getVenue().getId();
 
         return new TrainingGroupDTO(
                 trainingGroup.getId(),
                 trainingGroup.getName(),
                 trainingGroup.getDescription(),
-//                trainingGroup.getSchedule(),
+                schedulesId,
                 studentsId,
                 trainersId
-//                venueId
         );
     }
 }

@@ -17,8 +17,7 @@ public class TrainingGroupDTO {
     private Long id;
     private String name;
     private String description;
-//    private Map<DayOfWeek, LocalTime> schedule;
+    private List<Long> schedulesId;
     private List<Long> studentsId;
     private List<Long> trainersId;
-//    private long venueId;
 }

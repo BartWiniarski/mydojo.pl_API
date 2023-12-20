@@ -112,7 +112,7 @@ public class AdminController {
     }
 
     @GetMapping("/trainingGroups/{id}")
-    public TrainingGroupDTO getTrainingGroups(@PathVariable Long id) {
+    public TrainingGroupDTO getTrainingGroup(@PathVariable Long id) {
         return trainingGroupService.getTrainingGroupById(id);
     }
 
@@ -166,7 +166,7 @@ public class AdminController {
 
     // --------------- VENUES -------------------- \\
     @GetMapping("/venues")
-    public List<Venue> getVenuesList(){
+    public List<VenueDTO> getVenuesList(){
         return venueService.getVenues();
     }
 }

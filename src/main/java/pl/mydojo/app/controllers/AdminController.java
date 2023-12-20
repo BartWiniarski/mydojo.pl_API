@@ -90,6 +90,14 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("User with id: " + id + " deleted");
     }
 
+    @PostMapping("/users/status/{id}")
+    public ResponseEntity<?> postUserStatus(@PathVariable Long id) {
+        String status = userService.userStatusChange(id);
+
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .body("User with id: " + id + " status changed to: " + status + ".");
+    }
 
 // --------------- TRAINING GROUPS -------------------- \\
 

@@ -167,6 +167,20 @@ public class UserService implements UserDetailsService {
                 .collect(Collectors.toList());
     }
 
+    public String userStatusChange(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException(id);
+        }
+
+        User user = userRepository.findUserById(id);
+        boolean currentStatus = user.getEnabled();
+        user.setEnabled(!currentStatus);
+
+        userRepository.save(user);
+
+        return !currentStatus? "enabled" : "disabled";
+    }
+
     //------------------ MISCELLANEOUS ------------------\\
     public List<Role> getUserRoles(Long id) {
         return userRepository.findRolesByUserId(id);

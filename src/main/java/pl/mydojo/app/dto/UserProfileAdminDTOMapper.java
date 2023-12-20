@@ -25,7 +25,8 @@ public class UserProfileAdminDTOMapper implements Function<User, UserProfileAdmi
                 user.getDob(),
                 age,
                 user.getEmail(),
-                user.getRoles()
+                user.getRoles(),
+                user.getEnabled()
         );
     }
 }

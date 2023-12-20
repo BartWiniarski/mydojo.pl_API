@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +16,7 @@ import pl.mydojo.app.repositories.RoleRepository;
 import pl.mydojo.app.repositories.UserRepository;
 import pl.mydojo.app.services.UserService;
 import pl.mydojo.exceptions.authentication.BadAuthenticationException;
+import pl.mydojo.exceptions.authentication.UserDisabledException;
 import pl.mydojo.exceptions.user.UserAlreadyTakenException;
 import pl.mydojo.security.jwt.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -95,9 +97,12 @@ public class AuthenticationService {
                             request.getPassword()
                     )
             );
+        } catch (DisabledException e) {
+            throw new UserDisabledException();
         } catch (AuthenticationException e) {
             throw new BadAuthenticationException();
         }
+
         User user = userService.getUserByEmail(request.getEmail());
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);

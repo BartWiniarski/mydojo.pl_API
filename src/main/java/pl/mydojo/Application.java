@@ -11,7 +11,7 @@ public class Application {
 
 	public static void main(String[] args) {
 		ApplicationContext context = SpringApplication.run(Application.class, args);
-		prepareDb(context);
+//		prepareDb(context);
 	}
 
 	private static void prepareDb(ApplicationContext context) {

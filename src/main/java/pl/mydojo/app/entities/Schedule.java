@@ -22,7 +22,6 @@ public class Schedule {
 
     @Enumerated(EnumType.STRING)
     private DayOfWeek dayOfWeek;
-
     private LocalTime time;
 
     @ManyToOne

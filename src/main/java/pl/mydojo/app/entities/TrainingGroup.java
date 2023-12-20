@@ -23,11 +23,8 @@ public class TrainingGroup {
     private Long id;
     private String name;
     private String description;
-
     @OneToMany(mappedBy = "trainingGroup", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Schedule> schedules;
-
-
     @ManyToMany
     @JoinTable(
             name = "training_groups_trainers",
@@ -35,7 +32,6 @@ public class TrainingGroup {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<User> trainers;
-
     @ManyToMany
     @JoinTable(
             name = "training_groups_students",

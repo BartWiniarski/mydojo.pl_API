@@ -169,4 +169,9 @@ public class AdminController {
     public List<VenueDTO> getVenuesList(){
         return venueService.getVenues();
     }
+
+    @GetMapping("/venues/{id}")
+    public VenueDTO getVenue(@PathVariable long id){
+        return venueService.getVenue(id);
+    }
 }

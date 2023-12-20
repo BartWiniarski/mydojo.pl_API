@@ -3,8 +3,13 @@ package pl.mydojo.app.services;
 import org.springframework.stereotype.Service;
 import pl.mydojo.app.dto.VenueDTO;
 import pl.mydojo.app.dto.VenueDTOMapper;
+import pl.mydojo.app.entities.Schedule;
+import pl.mydojo.app.entities.User;
 import pl.mydojo.app.entities.Venue;
+import pl.mydojo.app.repositories.ScheduleRepository;
 import pl.mydojo.app.repositories.VenueRepository;
+import pl.mydojo.exceptions.schedule.ScheduleNotFoundException;
+import pl.mydojo.exceptions.trainingGroup.TrainingGroupNotFoundException;
 import pl.mydojo.exceptions.user.UserNotFoundException;
 import pl.mydojo.exceptions.venue.VenueNotFoundException;
 
@@ -16,11 +21,14 @@ public class VenueService {
 
     private final VenueRepository venueRepository;
     private final VenueDTOMapper venueDTOMapper;
+    private final ScheduleRepository scheduleRepository;
 
     public VenueService(VenueRepository venueRepository,
-                        VenueDTOMapper venueDTOMapper){
+                        VenueDTOMapper venueDTOMapper,
+                        ScheduleRepository scheduleRepository) {
         this.venueRepository = venueRepository;
         this.venueDTOMapper = venueDTOMapper;
+        this.scheduleRepository = scheduleRepository;
     }
 
     public List<VenueDTO> getVenues() {
@@ -35,5 +43,45 @@ public class VenueService {
             throw new VenueNotFoundException(id);
         }
         return venueDTOMapper.apply(venueRepository.getById(id));
+    }
+
+    public Venue addNewVenue(VenueDTO venueDTO) {
+
+        Venue newVenue = Venue.builder()
+                .name(venueDTO.getName())
+                .address(venueDTO.getAddress())
+                .build();
+
+        return venueRepository.save(newVenue);
+    }
+
+    public void updateVenueById(Long id, VenueDTO venueDTO) {
+
+        if (!venueRepository.existsById(id)) {
+            throw new VenueNotFoundException(id);
+        }
+
+        Venue venue = venueRepository.getById(id);
+
+        if (venueDTO.getName() != null) {
+            venue.setName(venueDTO.getName());
+        }
+        if (venueDTO.getAddress() != null) {
+            venue.setAddress(venueDTO.getAddress());
+        }
+        if (venueDTO.getSchedules() != null) {
+            List<Schedule> schedules = venueDTO.getSchedules()
+                    .stream()
+                    .map(s -> scheduleRepository.findById(s)
+                            .orElseThrow(() -> new ScheduleNotFoundException(s)))
+                    .collect(Collectors.toList());
+
+            // TODO nie zapisuje schedule poprawnie do DB
+            schedules.stream().forEach(s-> System.out.println(s.toString()));
+
+            venue.setSchedules(schedules);
+        }
+        venueRepository.save(venue);
+
     }
 }

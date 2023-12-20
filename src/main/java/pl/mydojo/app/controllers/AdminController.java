@@ -174,4 +174,22 @@ public class AdminController {
     public VenueDTO getVenue(@PathVariable long id){
         return venueService.getVenue(id);
     }
+
+    @PostMapping("/venues")
+    public ResponseEntity<?> postVenue(@RequestBody VenueDTO venueDTO) {
+        Venue newVenue = venueService.addNewVenue(venueDTO);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body("Venue added with id: " + newVenue.getId());
+    }
+
+    @PutMapping("/venues/{id}")
+    public ResponseEntity<?> putVenueById(@PathVariable Long id,
+                                                  @RequestBody VenueDTO venueDTO) {
+        venueService.updateVenueById(id, venueDTO);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body("Venue with id: " + id + " updated");
+    }
 }

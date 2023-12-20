@@ -20,6 +20,7 @@ public class Venue {
     private Long id;
     private String name;
     private String address;
-    @OneToMany(mappedBy = "venue")
+
+    @OneToMany(mappedBy = "venue", cascade = CascadeType.ALL)
     private List<Schedule> schedules;
 }

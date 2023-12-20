@@ -6,9 +6,11 @@ import org.springframework.web.bind.annotation.*;
 import pl.mydojo.app.dto.*;
 import pl.mydojo.app.entities.TrainingGroup;
 import pl.mydojo.app.entities.User;
+import pl.mydojo.app.entities.Venue;
 import pl.mydojo.app.services.DojoStatusService;
 import pl.mydojo.app.services.TrainingGroupService;
 import pl.mydojo.app.services.UserService;
+import pl.mydojo.app.services.VenueService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,13 +24,16 @@ public class AdminController {
     private final UserService userService;
     private final TrainingGroupService trainingGroupService;
     private final DojoStatusService dojoStatusService;
+    private final VenueService venueService;
 
     public AdminController(UserService userService,
                            TrainingGroupService trainingGroupService,
-                           DojoStatusService dojoStatusService) {
+                           DojoStatusService dojoStatusService,
+                           VenueService venueService) {
         this.userService = userService;
         this.trainingGroupService = trainingGroupService;
         this.dojoStatusService = dojoStatusService;
+        this.venueService = venueService;
     }
 
     @GetMapping("/test")
@@ -158,5 +163,10 @@ public class AdminController {
     public DojoStatusDTO getDojoStatus(){
         return dojoStatusService.getDojoStatus();
     }
-}
 
+    // --------------- VENUES -------------------- \\
+    @GetMapping("/venues")
+    public List<Venue> getVenuesList(){
+        return venueService.getVenues();
+    }
+}

@@ -24,11 +24,8 @@ public class TrainingGroup {
     private String name;
     private String description;
 
-    @ElementCollection
-    @CollectionTable(name = "training_group_schedule", joinColumns = @JoinColumn(name = "training_group_id"))
-    @MapKeyColumn(name = "day_of_week")
-    @Column(name = "time")
-    private Map<DayOfWeek, LocalTime> schedule = new HashMap<>();
+    @OneToMany(mappedBy = "trainingGroup", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Schedule> schedules;
 
 
     @ManyToMany
@@ -49,8 +46,5 @@ public class TrainingGroup {
 
     @ManyToMany(mappedBy = "trainingGroups")
     private List<TrainingPlan> trainingPlans;
-
-    @ManyToOne
-    private Venue venue;
 
 }

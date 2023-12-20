@@ -1,7 +1,10 @@
 package pl.mydojo.app.services;
 
 import org.springframework.stereotype.Service;
+import pl.mydojo.app.entities.Venue;
 import pl.mydojo.app.repositories.VenueRepository;
+
+import java.util.List;
 
 @Service
 public class VenueService {
@@ -13,4 +16,7 @@ public class VenueService {
     }
 
 
+    public List<Venue> getVenues() {
+        return venueRepository.findAll();
+    }
 }

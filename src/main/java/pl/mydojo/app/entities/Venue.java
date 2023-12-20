@@ -20,5 +20,5 @@ public class Venue {
     private String address;
 
     @OneToMany(mappedBy = "venue")
-    private List<TrainingGroup> trainingGroups;
+    private List<Schedule> schedules;
 }

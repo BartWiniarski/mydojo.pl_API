@@ -56,7 +56,7 @@ public class TrainingGroupService {
         TrainingGroup trainingGroup = TrainingGroup.builder()
                 .name(trainingGroupDTO.getName())
                 .description(trainingGroupDTO.getDescription())
-                .schedule(trainingGroupDTO.getSchedule())
+//                .schedule(trainingGroupDTO.getSchedule())
                 .build();
 
         return trainingGroupRepository.save(trainingGroup);
@@ -76,8 +76,8 @@ public class TrainingGroupService {
         if (trainingGroupUpdated.getDescription() != null) {
             trainingGroup.setDescription(trainingGroupUpdated.getDescription());
         }
-        if (trainingGroupUpdated.getTrainers() != null) {
-            List<User> trainers = trainingGroupUpdated.getTrainers()
+        if (trainingGroupUpdated.getTrainersId() != null) {
+            List<User> trainers = trainingGroupUpdated.getTrainersId()
                     .stream()
                     .map(trainerDTO -> userRepository.findById(trainerDTO)
                             .orElseThrow(() -> new IllegalStateException("Trainer not found with ID: " + trainerDTO)))
@@ -85,8 +85,8 @@ public class TrainingGroupService {
 
             trainingGroup.setTrainers(trainers);
         }
-        if (trainingGroupUpdated.getStudents() != null) {
-            List<User> students = trainingGroupUpdated.getStudents()
+        if (trainingGroupUpdated.getStudentsId() != null) {
+            List<User> students = trainingGroupUpdated.getStudentsId()
                     .stream()
                     .map(studentDTO -> userRepository.findById(studentDTO)
                             .orElseThrow(() -> new IllegalStateException("Student not found with ID: " + studentDTO)))
@@ -94,9 +94,9 @@ public class TrainingGroupService {
 
             trainingGroup.setStudents(students);
         }
-        if (trainingGroupUpdated.getSchedule() != null) {
-            trainingGroup.setSchedule(trainingGroupUpdated.getSchedule());
-        }
+//        if (trainingGroupUpdated.getSchedule() != null) {
+//            trainingGroup.setSchedule(trainingGroupUpdated.getSchedule());
+//        }
 
         trainingGroupRepository.save(trainingGroup);
     }

@@ -69,19 +69,16 @@ public class VenueService {
         if (venueDTO.getAddress() != null) {
             venue.setAddress(venueDTO.getAddress());
         }
-        if (venueDTO.getSchedules() != null) {
-            List<Schedule> schedules = venueDTO.getSchedules()
-                    .stream()
-                    .map(s -> scheduleRepository.findById(s)
-                            .orElseThrow(() -> new ScheduleNotFoundException(s)))
-                    .collect(Collectors.toList());
-
-            // TODO nie zapisuje schedule poprawnie do DB
-            schedules.stream().forEach(s-> System.out.println(s.toString()));
-
-            venue.setSchedules(schedules);
-        }
         venueRepository.save(venue);
 
+    }
+
+    public void deleteVenueById(Long id) {
+
+        if (!venueRepository.existsById(id)) {
+            throw new VenueNotFoundException(id);
+        }
+
+        venueRepository.deleteById(id);
     }
 }

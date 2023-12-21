@@ -192,4 +192,12 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.ACCEPTED)
                 .body("Venue with id: " + id + " updated");
     }
+
+    @DeleteMapping("/venues/{id}")
+    public ResponseEntity<?> deleteVenueById(@PathVariable Long id) {
+        venueService.deleteVenueById(id);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body("Venue with id: " + id + " deleted");
+    }
 }

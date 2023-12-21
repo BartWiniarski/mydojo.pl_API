@@ -21,7 +21,6 @@ public class VenueService {
 
     private final VenueRepository venueRepository;
     private final VenueDTOMapper venueDTOMapper;
-    private final ScheduleRepository scheduleRepository;
 
     public VenueService(VenueRepository venueRepository,
                         VenueDTOMapper venueDTOMapper,

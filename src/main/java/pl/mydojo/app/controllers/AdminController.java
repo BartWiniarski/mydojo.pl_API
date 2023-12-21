@@ -13,9 +13,7 @@ import pl.mydojo.app.services.UserService;
 import pl.mydojo.app.services.VenueService;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/admin")
@@ -166,7 +164,7 @@ public class AdminController {
 
     // --------------- VENUES -------------------- \\
     @GetMapping("/venues")
-    public List<VenueDTO> getVenuesList(){
+    public List<VenueDTO> getVenues(){
         return venueService.getVenues();
     }
 
@@ -199,5 +197,11 @@ public class AdminController {
 
         return ResponseEntity.status(HttpStatus.ACCEPTED)
                 .body("Venue with id: " + id + " deleted");
+    }
+
+    // --------------- SCHEDULES -------------------- \\
+    @GetMapping("/schedules")
+    public List<ScheduleDTO> getScheduleList(){
+        return scheduleService.getSchedules();
     }
 }

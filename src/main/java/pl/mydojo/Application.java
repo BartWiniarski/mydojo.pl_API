@@ -25,6 +25,9 @@ public class Application {
 		prepareDb.setBasicAdmin();
 		prepareDb.setBasicTrainer();
 		prepareDb.setBasicStudent();
+		prepareDb.setBasicVenue();
+		prepareDb.setBasicTrainingGroup();
+		prepareDb.setBasicSchedule();
 		generateFakeUsers(context);
 	}
 

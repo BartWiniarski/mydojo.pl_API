@@ -10,7 +10,9 @@ import pl.mydojo.app.repositories.UserRepository;
 import pl.mydojo.exceptions.trainingGroup.NotAssignedToTrainingGroupException;
 import pl.mydojo.exceptions.trainingGroup.TrainingGroupNotFoundException;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,20 +55,25 @@ public class TrainingGroupService {
 
     public TrainingGroup addNewTrainingGroup(TrainingGroupDTO trainingGroupDTO) {
 
+        List<Long> trainerIds = Optional.ofNullable(
+                trainingGroupDTO.getTrainersId()).orElse(Collections.emptyList());
+        List<Long> studentIds = Optional.ofNullable(
+                trainingGroupDTO.getStudentsId()).orElse(Collections.emptyList());
+
         TrainingGroup trainingGroup = TrainingGroup.builder()
                 .name(trainingGroupDTO.getName())
                 .description(trainingGroupDTO.getDescription())
-                .trainers(trainingGroupDTO.getTrainersId()
+                .trainers(trainerIds
                         .stream()
-                        .map(trainerDTO -> userRepository.findById(trainerDTO)
+                        .map(trainerId -> userRepository.findById(trainerId)
                                 //TODO poprawić wyjątki, żeby rzucić Trainer not found
-                                .orElseThrow(() -> new IllegalStateException("Trainer not found with ID: " + trainerDTO)))
+                                .orElseThrow(() -> new IllegalStateException("Trainer not found with ID: " + trainerId)))
                         .collect(Collectors.toList()))
-                .students(trainingGroupDTO.getStudentsId()
+                .students(studentIds
                         .stream()
-                        .map(studentDTO -> userRepository.findById(studentDTO)
+                        .map(studentId -> userRepository.findById(studentId)
                                 //TODO poprawić wyjątki, żeby rzucić Student not found
-                                .orElseThrow(() -> new IllegalStateException("Student not found with ID: " + studentDTO)))
+                                .orElseThrow(() -> new IllegalStateException("Student not found with ID: " + studentId)))
                         .collect(Collectors.toList()))
                 .build();
 

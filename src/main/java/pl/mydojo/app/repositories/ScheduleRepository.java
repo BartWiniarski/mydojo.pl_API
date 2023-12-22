@@ -5,5 +5,7 @@ import org.springframework.stereotype.Repository;
 import pl.mydojo.app.entities.Schedule;
 
 @Repository
-public interface ScheduleRepository extends JpaRepository<Schedule,Long> {
+public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
+
+    Schedule findScheduleById(long id);
 }

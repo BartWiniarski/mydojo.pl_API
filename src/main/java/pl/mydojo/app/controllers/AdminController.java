@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.mydojo.app.dto.*;
+import pl.mydojo.app.entities.Schedule;
 import pl.mydojo.app.entities.TrainingGroup;
 import pl.mydojo.app.entities.User;
 import pl.mydojo.app.entities.Venue;
@@ -201,7 +202,41 @@ public class AdminController {
 
     // --------------- SCHEDULES -------------------- \\
     @GetMapping("/schedules")
-    public List<ScheduleDTO> getScheduleList(){
+    public List<ScheduleDTO> getSchedules(){
         return scheduleService.getSchedules();
     }
+
+    @GetMapping("/schedules/{id}")
+    public ScheduleDTO getSchedule(@PathVariable long id){
+        return scheduleService.getScheduleById(id);
+    }
+
+    @PostMapping("/schedules")
+    public ResponseEntity<?> postSchedule(@RequestBody ScheduleDTO scheduleDTO){
+        Schedule newSchedule = scheduleService.addNewSchedule(scheduleDTO);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body("Schedule added with id: " + newSchedule.getId());
+    }
+
+    @PutMapping("/schedules/{id}")
+    public ResponseEntity<?> putSchedule(@PathVariable long id,
+            @RequestBody ScheduleDTO scheduleDTO){
+
+        scheduleService.updateScheduleById(id, scheduleDTO);
+
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .body("Schedule with id: " + id + " updated");
+    }
+
+    @DeleteMapping("/schedules/{id}")
+    public ResponseEntity<?> deleteScheduleById(@PathVariable Long id) {
+        scheduleService.deleteScheduleById(id);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body("Schedule with id: " + id + " deleted");
+    }
+
 }

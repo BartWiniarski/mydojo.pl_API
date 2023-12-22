@@ -42,7 +42,7 @@ public class VenueService {
         if (!venueRepository.existsById(id)) {
             throw new VenueNotFoundException(id);
         }
-        return venueDTOMapper.apply(venueRepository.getById(id));
+        return venueDTOMapper.apply(venueRepository.findVenueById(id));
     }
 
     public Venue addNewVenue(VenueDTO venueDTO) {
@@ -61,7 +61,7 @@ public class VenueService {
             throw new VenueNotFoundException(id);
         }
 
-        Venue venue = venueRepository.getById(id);
+        Venue venue = venueRepository.findVenueById(id);
 
         if (venueDTO.getName() != null) {
             venue.setName(venueDTO.getName());

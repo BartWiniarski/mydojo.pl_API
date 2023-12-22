@@ -8,6 +8,8 @@ import java.util.function.Function;
 @Service
 public class ScheduleDTOMapper implements Function<Schedule, ScheduleDTO> {
 
+
+
     @Override
     public ScheduleDTO apply(Schedule schedule) {
 
@@ -15,8 +17,8 @@ public class ScheduleDTOMapper implements Function<Schedule, ScheduleDTO> {
                 schedule.getId(),
                 schedule.getDayOfWeek(),
                 schedule.getTime(),
-                schedule.getVenue(),
-                schedule.getTrainingGroup()
+                schedule.getVenue().getId(),
+                schedule.getTrainingGroup().getId()
         );
     }
 }

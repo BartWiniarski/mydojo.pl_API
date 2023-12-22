@@ -17,6 +17,6 @@ public class ScheduleDTO {
     private Long id;
     private DayOfWeek dayOfWeek;
     private LocalTime time;
-    private Venue venue;
-    private TrainingGroup trainingGroup;
+    private long venueId;
+    private long trainingGroupId;
 }

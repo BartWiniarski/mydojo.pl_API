@@ -7,10 +7,7 @@ import pl.mydojo.app.dto.*;
 import pl.mydojo.app.entities.TrainingGroup;
 import pl.mydojo.app.entities.User;
 import pl.mydojo.app.entities.Venue;
-import pl.mydojo.app.services.DojoStatusService;
-import pl.mydojo.app.services.TrainingGroupService;
-import pl.mydojo.app.services.UserService;
-import pl.mydojo.app.services.VenueService;
+import pl.mydojo.app.services.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,15 +20,18 @@ public class AdminController {
     private final TrainingGroupService trainingGroupService;
     private final DojoStatusService dojoStatusService;
     private final VenueService venueService;
+    private final ScheduleService scheduleService;
 
     public AdminController(UserService userService,
                            TrainingGroupService trainingGroupService,
                            DojoStatusService dojoStatusService,
-                           VenueService venueService) {
+                           VenueService venueService,
+                           ScheduleService scheduleService) {
         this.userService = userService;
         this.trainingGroupService = trainingGroupService;
         this.dojoStatusService = dojoStatusService;
         this.venueService = venueService;
+        this.scheduleService = scheduleService;
     }
 
     @GetMapping("/test")

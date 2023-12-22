@@ -7,6 +7,8 @@ import pl.mydojo.app.entities.TrainingGroup;
 import pl.mydojo.app.entities.User;
 import pl.mydojo.app.repositories.TrainingGroupRepository;
 import pl.mydojo.app.repositories.UserRepository;
+import pl.mydojo.exceptions.student.StudentNotFoundException;
+import pl.mydojo.exceptions.trainer.TrainerNotFoundException;
 import pl.mydojo.exceptions.trainingGroup.NotAssignedToTrainingGroupException;
 import pl.mydojo.exceptions.trainingGroup.TrainingGroupNotFoundException;
 
@@ -66,14 +68,13 @@ public class TrainingGroupService {
                 .trainers(trainerIds
                         .stream()
                         .map(trainerId -> userRepository.findById(trainerId)
-                                //TODO poprawić wyjątki, żeby rzucić Trainer not found
-                                .orElseThrow(() -> new IllegalStateException("Trainer not found with ID: " + trainerId)))
+                                .orElseThrow(() -> new TrainerNotFoundException(trainerId)))
+
                         .collect(Collectors.toList()))
                 .students(studentIds
                         .stream()
                         .map(studentId -> userRepository.findById(studentId)
-                                //TODO poprawić wyjątki, żeby rzucić Student not found
-                                .orElseThrow(() -> new IllegalStateException("Student not found with ID: " + studentId)))
+                                .orElseThrow(() -> new StudentNotFoundException(studentId)))
                         .collect(Collectors.toList()))
                 .build();
 
@@ -97,9 +98,8 @@ public class TrainingGroupService {
         if (trainingGroupDTO.getTrainersId() != null) {
             List<User> trainers = trainingGroupDTO.getTrainersId()
                     .stream()
-                    .map(trainerDTO -> userRepository.findById(trainerDTO)
-                            //TODO poprawić wyjątki, żeby rzucić Trainer not found
-                            .orElseThrow(() -> new IllegalStateException("Trainer not found with ID: " + trainerDTO)))
+                    .map(trainerId -> userRepository.findById(trainerId)
+                            .orElseThrow(() -> new TrainerNotFoundException(trainerId)))
                     .collect(Collectors.toList());
 
             trainingGroup.setTrainers(trainers);
@@ -107,9 +107,8 @@ public class TrainingGroupService {
         if (trainingGroupDTO.getStudentsId() != null) {
             List<User> students = trainingGroupDTO.getStudentsId()
                     .stream()
-                    .map(studentDTO -> userRepository.findById(studentDTO)
-                            //TODO poprawić wyjątki, żeby rzucić Student not found
-                            .orElseThrow(() -> new IllegalStateException("Student not found with ID: " + studentDTO)))
+                    .map(studentId -> userRepository.findById(studentId)
+                            .orElseThrow(() -> new StudentNotFoundException(studentId)))
                     .collect(Collectors.toList());
 
             trainingGroup.setStudents(students);

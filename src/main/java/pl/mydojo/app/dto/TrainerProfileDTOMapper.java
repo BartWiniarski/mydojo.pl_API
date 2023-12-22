@@ -5,7 +5,6 @@ import pl.mydojo.app.entities.User;
 
 import java.util.function.Function;
 
-
 @Service
 public class TrainerProfileDTOMapper implements Function<User, TrainerProfileDTO> {
 

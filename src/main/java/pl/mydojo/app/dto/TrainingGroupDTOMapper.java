@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 @Service
 public class TrainingGroupDTOMapper implements Function<TrainingGroup, TrainingGroupDTO> {
 
-
     @Override
     public TrainingGroupDTO apply(TrainingGroup trainingGroup) {
         List<Long> schedulesId = trainingGroup.getSchedules()

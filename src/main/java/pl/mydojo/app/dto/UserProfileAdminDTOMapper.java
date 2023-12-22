@@ -1,13 +1,9 @@
 package pl.mydojo.app.dto;
 
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import org.springframework.stereotype.Service;
 import pl.mydojo.app.entities.User;
 import pl.mydojo.app.utils.AgeUtil;
 
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.function.Function;
 
 @Service

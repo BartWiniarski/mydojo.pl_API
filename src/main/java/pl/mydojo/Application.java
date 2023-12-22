@@ -6,12 +6,17 @@ import org.springframework.context.ApplicationContext;
 import pl.mydojo.app.utils.FakeGenerators;
 import pl.mydojo.app.utils.PrepareDb;
 
+import java.util.Arrays;
+
 @SpringBootApplication
 public class Application {
 
 	public static void main(String[] args) {
 		ApplicationContext context = SpringApplication.run(Application.class, args);
-		prepareDb(context);
+
+		if (Arrays.asList(context.getEnvironment().getActiveProfiles()).contains("init-db")) {
+			prepareDb(context);
+		}
 	}
 
 	private static void prepareDb(ApplicationContext context) {
@@ -20,6 +25,9 @@ public class Application {
 		prepareDb.setBasicAdmin();
 		prepareDb.setBasicTrainer();
 		prepareDb.setBasicStudent();
+		prepareDb.setBasicVenue();
+		prepareDb.setBasicTrainingGroup();
+		prepareDb.setBasicSchedule();
 		generateFakeUsers(context);
 	}
 

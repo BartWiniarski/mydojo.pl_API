@@ -4,16 +4,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.mydojo.app.dto.*;
+import pl.mydojo.app.entities.Schedule;
 import pl.mydojo.app.entities.TrainingGroup;
 import pl.mydojo.app.entities.User;
-import pl.mydojo.app.services.DojoStatusService;
-import pl.mydojo.app.services.TrainingGroupService;
-import pl.mydojo.app.services.UserService;
+import pl.mydojo.app.entities.Venue;
+import pl.mydojo.app.services.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/admin")
@@ -22,13 +20,19 @@ public class AdminController {
     private final UserService userService;
     private final TrainingGroupService trainingGroupService;
     private final DojoStatusService dojoStatusService;
+    private final VenueService venueService;
+    private final ScheduleService scheduleService;
 
     public AdminController(UserService userService,
                            TrainingGroupService trainingGroupService,
-                           DojoStatusService dojoStatusService) {
+                           DojoStatusService dojoStatusService,
+                           VenueService venueService,
+                           ScheduleService scheduleService) {
         this.userService = userService;
         this.trainingGroupService = trainingGroupService;
         this.dojoStatusService = dojoStatusService;
+        this.venueService = venueService;
+        this.scheduleService = scheduleService;
     }
 
     @GetMapping("/test")
@@ -107,7 +111,7 @@ public class AdminController {
     }
 
     @GetMapping("/trainingGroups/{id}")
-    public TrainingGroupDTO getTrainingGroups(@PathVariable Long id) {
+    public TrainingGroupDTO getTrainingGroup(@PathVariable Long id) {
         return trainingGroupService.getTrainingGroupById(id);
     }
 
@@ -158,4 +162,81 @@ public class AdminController {
     public DojoStatusDTO getDojoStatus(){
         return dojoStatusService.getDojoStatus();
     }
+
+    // --------------- VENUES -------------------- \\
+    @GetMapping("/venues")
+    public List<VenueDTO> getVenues(){
+        return venueService.getVenues();
+    }
+
+    @GetMapping("/venues/{id}")
+    public VenueDTO getVenue(@PathVariable long id){
+        return venueService.getVenue(id);
+    }
+
+    @PostMapping("/venues")
+    public ResponseEntity<?> postVenue(@RequestBody VenueDTO venueDTO) {
+        Venue newVenue = venueService.addNewVenue(venueDTO);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body("Venue added with id: " + newVenue.getId());
+    }
+
+    @PutMapping("/venues/{id}")
+    public ResponseEntity<?> putVenueById(@PathVariable Long id,
+                                                  @RequestBody VenueDTO venueDTO) {
+        venueService.updateVenueById(id, venueDTO);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body("Venue with id: " + id + " updated");
+    }
+
+    @DeleteMapping("/venues/{id}")
+    public ResponseEntity<?> deleteVenueById(@PathVariable Long id) {
+        venueService.deleteVenueById(id);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body("Venue with id: " + id + " deleted");
+    }
+
+    // --------------- SCHEDULES -------------------- \\
+    @GetMapping("/schedules")
+    public List<ScheduleDTO> getSchedules(){
+        return scheduleService.getSchedules();
+    }
+
+    @GetMapping("/schedules/{id}")
+    public ScheduleDTO getSchedule(@PathVariable long id){
+        return scheduleService.getScheduleById(id);
+    }
+
+    @PostMapping("/schedules")
+    public ResponseEntity<?> postSchedule(@RequestBody ScheduleDTO scheduleDTO){
+        Schedule newSchedule = scheduleService.addNewSchedule(scheduleDTO);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body("Schedule added with id: " + newSchedule.getId());
+    }
+
+    @PutMapping("/schedules/{id}")
+    public ResponseEntity<?> putSchedule(@PathVariable long id,
+            @RequestBody ScheduleDTO scheduleDTO){
+
+        scheduleService.updateScheduleById(id, scheduleDTO);
+
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .body("Schedule with id: " + id + " updated");
+    }
+
+    @DeleteMapping("/schedules/{id}")
+    public ResponseEntity<?> deleteScheduleById(@PathVariable Long id) {
+        scheduleService.deleteScheduleById(id);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body("Schedule with id: " + id + " deleted");
+    }
+
 }

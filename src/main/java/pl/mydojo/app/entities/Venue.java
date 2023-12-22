@@ -1,8 +1,8 @@
 package pl.mydojo.app.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
 import java.util.List;
 
 
@@ -10,15 +10,17 @@ import java.util.List;
 @Table(name = "venues")
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Venue {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
     private String address;
 
-    @OneToMany(mappedBy = "venue")
-    private List<TrainingGroup> trainingGroups;
+    @OneToMany(mappedBy = "venue", cascade = CascadeType.ALL)
+    private List<Schedule> schedules;
 }

@@ -1,14 +1,11 @@
 package pl.mydojo.security.authentication;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.ExpiredJwtException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 import pl.mydojo.app.entities.Role;
 import pl.mydojo.app.entities.RoleType;
 import pl.mydojo.app.entities.User;
@@ -19,14 +16,9 @@ import pl.mydojo.exceptions.authentication.BadAuthenticationException;
 import pl.mydojo.exceptions.authentication.UserDisabledException;
 import pl.mydojo.exceptions.user.UserAlreadyTakenException;
 import pl.mydojo.security.jwt.JwtService;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 import pl.mydojo.security.registration.RegisterRequest;
 
 import java.io.IOException;
-import java.net.http.HttpHeaders;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

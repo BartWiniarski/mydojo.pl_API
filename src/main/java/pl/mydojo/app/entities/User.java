@@ -60,7 +60,7 @@ public class User implements UserDetails {
     @JoinColumn(name = "guardian_id", nullable = true)
     private User guardian;
 
-    @OneToMany(mappedBy = "guardian")
+    @OneToMany(mappedBy = "guardian", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<User> wards;
 
 

@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.mydojo.app.dto.TrainerTrainingGroupDTO;
 import pl.mydojo.app.dto.TrainingGroupDTO;
 import pl.mydojo.app.services.TrainingGroupService;
 import pl.mydojo.security.jwt.JwtService;
@@ -24,7 +25,7 @@ public class TrainerController {
     }
 
     @GetMapping("/trainingGroups")
-    public List<TrainingGroupDTO> getTrainingGroups(@RequestHeader("Authorization") String token) {
+    public List<TrainerTrainingGroupDTO> getTrainingGroups(@RequestHeader("Authorization") String token) {
         String userEmailFromToken = jwtService.extractUsername(token.substring(7));
         return trainingGroupService.getTrainerTrainingGroups(userEmailFromToken);
     }

@@ -1,8 +1,7 @@
 package pl.mydojo.app.services;
 
 import org.springframework.stereotype.Service;
-import pl.mydojo.app.dto.TrainingGroupDTO;
-import pl.mydojo.app.dto.TrainingGroupDTOMapper;
+import pl.mydojo.app.dto.*;
 import pl.mydojo.app.entities.TrainingGroup;
 import pl.mydojo.app.entities.User;
 import pl.mydojo.app.repositories.TrainingGroupRepository;
@@ -22,15 +21,21 @@ public class TrainingGroupService {
 
     private final TrainingGroupRepository trainingGroupRepository;
     private final TrainingGroupDTOMapper trainingGroupDTOMapper;
+    private final StudentTrainingGroupDTOMapper studentTrainingGroupDTOMapper;
+    private final TrainerTrainingGroupDTOMapper trainerTrainingGroupDTOMapper;
     private final UserService userService;
     private final UserRepository userRepository;
 
     public TrainingGroupService(TrainingGroupRepository trainingGroupRepository,
                                 TrainingGroupDTOMapper trainingGroupDTOMapper,
+                                StudentTrainingGroupDTOMapper studentTrainingGroupDTOMapper,
+                                TrainerTrainingGroupDTOMapper trainerTrainingGroupDTOMapper,
                                 UserService userService,
                                 UserRepository userRepository) {
         this.trainingGroupRepository = trainingGroupRepository;
         this.trainingGroupDTOMapper = trainingGroupDTOMapper;
+        this.studentTrainingGroupDTOMapper = studentTrainingGroupDTOMapper;
+        this.trainerTrainingGroupDTOMapper = trainerTrainingGroupDTOMapper;
         this.userService = userService;
         this.userRepository = userRepository;
     }
@@ -126,7 +131,7 @@ public class TrainingGroupService {
 
 
     //------------------ STUDENTS AND TRAINERS ------------------\\
-    public List<TrainingGroupDTO> getStudentTrainingGroups(String userEmailFromToken) {
+    public List<StudentTrainingGroupDTO> getStudentTrainingGroups(String userEmailFromToken) {
         User user = userService.getUserByEmail(userEmailFromToken);
 
         List<TrainingGroup> trainingGroups = trainingGroupRepository
@@ -137,11 +142,11 @@ public class TrainingGroupService {
         }
 
         return trainingGroups.stream()
-                .map(u -> trainingGroupDTOMapper.apply(u))
+                .map(u -> studentTrainingGroupDTOMapper.apply(u))
                 .collect(Collectors.toList());
     }
 
-    public List<TrainingGroupDTO> getTrainerTrainingGroups(String userEmailFromToken) {
+    public List<TrainerTrainingGroupDTO> getTrainerTrainingGroups(String userEmailFromToken) {
         User user = userService.getUserByEmail(userEmailFromToken);
 
         List<TrainingGroup> trainingGroups = trainingGroupRepository
@@ -152,7 +157,7 @@ public class TrainingGroupService {
         }
 
         return trainingGroups.stream()
-                .map(u -> trainingGroupDTOMapper.apply(u))
+                .map(u -> trainerTrainingGroupDTOMapper.apply(u))
                 .collect(Collectors.toList());
     }
 }

@@ -7,12 +7,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("/home")
 public class HomeController {
 
-    @GetMapping("/")
+    @GetMapping("/status")
     @ResponseBody
-    public String home(){
+    public String status(){
 
         return "I'm up and running!";
     }

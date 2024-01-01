@@ -11,14 +11,14 @@ import pl.mydojo.security.jwt.JwtService;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/trainer")
+@RequestMapping("v1/trainer")
 public class TrainerController {
 
     private final JwtService jwtService;
     private final TrainingGroupService trainingGroupService;
 
     public TrainerController(JwtService jwtService,
-                             TrainingGroupService trainingGroupService){
+                             TrainingGroupService trainingGroupService) {
         this.jwtService = jwtService;
         this.trainingGroupService = trainingGroupService;
     }

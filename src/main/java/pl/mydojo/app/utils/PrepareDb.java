@@ -11,7 +11,6 @@ import pl.mydojo.app.entities.Role;
 import pl.mydojo.app.entities.RoleType;
 import pl.mydojo.app.entities.User;
 import pl.mydojo.app.repositories.RoleRepository;
-import pl.mydojo.app.repositories.ScheduleRepository;
 import pl.mydojo.app.services.ScheduleService;
 import pl.mydojo.app.services.TrainingGroupService;
 import pl.mydojo.app.services.UserService;

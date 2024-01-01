@@ -1,11 +1,10 @@
 package pl.mydojo.app.repositories;
 
-import pl.mydojo.app.entities.Role;
-import pl.mydojo.app.entities.RoleType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import pl.mydojo.app.entities.Role;
+import pl.mydojo.app.entities.RoleType;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository

@@ -8,11 +8,11 @@ import pl.mydojo.app.services.UserService;
 import pl.mydojo.security.jwt.JwtService;
 
 @RestController
-@RequestMapping("api/v1/users")
+@RequestMapping("v1/users")
 public class UserController {
 
-    private JwtService jwtService;
-    private UserService userService;
+    private final JwtService jwtService;
+    private final UserService userService;
 
     public UserController(JwtService jwtService, UserService userService) {
         this.jwtService = jwtService;

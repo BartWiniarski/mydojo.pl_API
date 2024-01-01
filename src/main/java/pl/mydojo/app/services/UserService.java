@@ -178,7 +178,7 @@ public class UserService implements UserDetailsService {
 
         userRepository.save(user);
 
-        return !currentStatus? "enabled" : "disabled";
+        return !currentStatus ? "enabled" : "disabled";
     }
 
     //------------------ MISCELLANEOUS ------------------\\

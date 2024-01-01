@@ -1,4 +1,5 @@
 package pl.mydojo.security.registration;
+
 import lombok.*;
 
 import java.time.LocalDate;

@@ -1,6 +1,7 @@
 package pl.mydojo.app.dto;
 
 import lombok.*;
+
 @Getter
 @Setter
 @Builder

@@ -14,12 +14,12 @@ public class TrainingGroupDTOMapper implements Function<TrainingGroup, TrainingG
     public TrainingGroupDTO apply(TrainingGroup trainingGroup) {
         List<Long> schedulesId = trainingGroup.getSchedules()
                 .stream()
-                .map(s-> s.getId())
+                .map(s -> s.getId())
                 .collect(Collectors.toList());
 
         List<Long> studentsId = trainingGroup.getStudents()
                 .stream()
-                .map(s-> s.getId())
+                .map(s -> s.getId())
                 .collect(Collectors.toList());
 
         List<Long> trainersId = trainingGroup.getTrainers()

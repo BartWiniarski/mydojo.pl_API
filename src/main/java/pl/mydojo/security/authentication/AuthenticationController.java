@@ -8,7 +8,7 @@ import pl.mydojo.security.registration.RegisterResponse;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("v1/auth")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
@@ -20,7 +20,7 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         String token = authenticationService.register(request).getAccessToken();
-        RegisterResponse response = new RegisterResponse("User registered successfully",token);
+        RegisterResponse response = new RegisterResponse("User registered successfully", token);
         return ResponseEntity.ok(response);
     }
 

@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pl.mydojo.exceptions.student.StudentNotFoundException;
-import pl.mydojo.exceptions.trainer.TrainerNotFoundException;
 
 import java.util.HashMap;
 import java.util.Map;

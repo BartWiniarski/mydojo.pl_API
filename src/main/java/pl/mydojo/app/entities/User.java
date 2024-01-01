@@ -7,7 +7,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -104,14 +103,14 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
 
-        for(Role role : roles){
-            authorities.add(new SimpleGrantedAuthority("ROLE_"+role.getType().name()));
+        for (Role role : roles) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getType().name()));
         }
         return authorities;
     }
 
     @Override
-    public String getPassword(){
+    public String getPassword() {
         return password;
     }
 

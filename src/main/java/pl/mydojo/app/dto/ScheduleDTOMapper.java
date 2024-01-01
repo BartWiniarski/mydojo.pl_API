@@ -9,7 +9,6 @@ import java.util.function.Function;
 public class ScheduleDTOMapper implements Function<Schedule, ScheduleDTO> {
 
 
-
     @Override
     public ScheduleDTO apply(Schedule schedule) {
 

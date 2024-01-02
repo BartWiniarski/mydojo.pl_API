@@ -33,8 +33,6 @@ public class User implements UserDetails {
     private Boolean locked = false;
     @Builder.Default
     private Boolean enabled = true;
-
-    //TODO zastanowić się czy nie zmienić query na leftJoin
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",

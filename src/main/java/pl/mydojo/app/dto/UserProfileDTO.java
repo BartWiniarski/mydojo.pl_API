@@ -14,5 +14,4 @@ public class UserProfileDTO {
     private String lastName;
     private LocalDate dob;
     private String email;
-    //TODO: w przyszłości dodać guardian/wards
 }

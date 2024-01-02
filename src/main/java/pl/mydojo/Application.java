@@ -25,10 +25,11 @@ public class Application {
         prepareDb.setBasicAdmin();
         prepareDb.setBasicTrainer();
         prepareDb.setBasicStudent();
+        generateFakeUsers(context);
         prepareDb.setBasicVenue();
         prepareDb.setBasicTrainingGroup();
-        prepareDb.setBasicSchedule();
-        generateFakeUsers(context);
+        prepareDb.setPrimarySchedule();
+        prepareDb.setSecondarySchedule();
     }
 
     public static void generateFakeUsers(ApplicationContext context) {
@@ -38,8 +39,7 @@ public class Application {
         fakeGenerators.usersGenerator("student", 5, 10, 15);
         fakeGenerators.usersGenerator("student", 5, 15, 20);
         fakeGenerators.usersGenerator("student", 5, 20, 60);
-        fakeGenerators.usersGenerator("trener", 5, 22, 80);
-
+        fakeGenerators.usersGenerator("trainer", 5, 22, 80);
     }
 
 

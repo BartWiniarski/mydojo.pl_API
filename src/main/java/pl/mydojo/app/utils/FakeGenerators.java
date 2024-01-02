@@ -44,7 +44,7 @@ public class FakeGenerators {
                 case "admin":
                     role = new Role(1L, RoleType.ADMIN);
                     break;
-                case "trener":
+                case "trainer":
                     role = new Role(2L, RoleType.TRAINER);
                     break;
                 case "student":

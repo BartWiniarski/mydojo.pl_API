@@ -41,6 +41,4 @@ public class Application {
         fakeGenerators.usersGenerator("student", 5, 20, 60);
         fakeGenerators.usersGenerator("trainer", 5, 22, 80);
     }
-
-
 }

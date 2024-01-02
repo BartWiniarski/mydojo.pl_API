@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class HomeController {
-
     @GetMapping("/status")
     @ResponseBody
     public String status() {

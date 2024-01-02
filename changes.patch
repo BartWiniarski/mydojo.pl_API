@@ -1,0 +1,956 @@
+diff --git a/pom.xml b/pom.xml
+index 302a4fd..e343107 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -8,7 +8,7 @@
+ 		<version>3.2.0</version>
+ 		<relativePath/> <!-- lookup parent from repository -->
+ 	</parent>
+-	<groupId>me.winiarski</groupId>
++	<groupId>pl.mydojo</groupId>
+ 	<artifactId>mydojo_pl</artifactId>
+ 	<version>0.1.0</version>
+ 	<name>mydojo.pl</name>
+@@ -41,11 +41,36 @@
+ 			<artifactId>lombok</artifactId>
+ 			<optional>true</optional>
+ 		</dependency>
++		<dependency>
++			<groupId>io.jsonwebtoken</groupId>
++			<artifactId>jjwt-api</artifactId>
++			<version>0.11.5</version>
++		</dependency>
++		<dependency>
++			<groupId>io.jsonwebtoken</groupId>
++			<artifactId>jjwt-impl</artifactId>
++			<version>0.11.5</version>
++		</dependency>
++		<dependency>
++			<groupId>io.jsonwebtoken</groupId>
++			<artifactId>jjwt-jackson</artifactId>
++			<version>0.11.5</version>
++		</dependency>
+ 		<dependency>
+ 			<groupId>org.springframework.boot</groupId>
+ 			<artifactId>spring-boot-starter-test</artifactId>
+ 			<scope>test</scope>
+ 		</dependency>
++		<dependency>
++			<groupId>org.springframework.boot</groupId>
++			<artifactId>spring-boot-starter-security</artifactId>
++		</dependency>
++		<dependency>
++			<groupId>com.github.javafaker</groupId>
++			<artifactId>javafaker</artifactId>
++			<version>1.0.2</version>
++		</dependency>
++
+ 	</dependencies>
+ 
+ 	<build>
+diff --git a/src/main/java/pl/mydojo/Application.java b/src/main/java/pl/mydojo/Application.java
+index 566c222..841b8db 100644
+--- a/src/main/java/pl/mydojo/Application.java
++++ b/src/main/java/pl/mydojo/Application.java
+@@ -41,6 +41,4 @@ public class Application {
+         fakeGenerators.usersGenerator("student", 5, 20, 60);
+         fakeGenerators.usersGenerator("trainer", 5, 22, 80);
+     }
+-
+-
+ }
+diff --git a/src/main/java/pl/mydojo/app/dto/DojoStatusDTO.java b/src/main/java/pl/mydojo/app/dto/DojoStatusDTO.java
+new file mode 100644
+index 0000000..b481007
+--- /dev/null
++++ b/src/main/java/pl/mydojo/app/dto/DojoStatusDTO.java
+@@ -0,0 +1,16 @@
++package pl.mydojo.app.dto;
++
++import lombok.*;
++
++@Getter
++@Setter
++@Builder
++@NoArgsConstructor
++@AllArgsConstructor
++public class DojoStatusDTO {
++    private long numberOfStudents;
++    private long numberOfTrainers;
++    private long numberOfTrainingGroups;
++    private long numberOfEnabledUsers;
++    private long numberOfDisabledUsers;
++}
+diff --git a/src/main/java/pl/mydojo/app/dto/TrainerProfileDTO.java b/src/main/java/pl/mydojo/app/dto/TrainerProfileDTO.java
+new file mode 100644
+index 0000000..f89a38a
+--- /dev/null
++++ b/src/main/java/pl/mydojo/app/dto/TrainerProfileDTO.java
+@@ -0,0 +1,14 @@
++package pl.mydojo.app.dto;
++
++import lombok.*;
++
++@Getter
++@Setter
++@Builder
++@NoArgsConstructor
++@AllArgsConstructor
++public class TrainerProfileDTO {
++    private Long id;
++    private String firstName;
++    private String lastName;
++}
+diff --git a/src/main/java/pl/mydojo/app/dto/TrainerProfileDTOMapper.java b/src/main/java/pl/mydojo/app/dto/TrainerProfileDTOMapper.java
+new file mode 100644
+index 0000000..2fefba9
+--- /dev/null
++++ b/src/main/java/pl/mydojo/app/dto/TrainerProfileDTOMapper.java
+@@ -0,0 +1,20 @@
++package pl.mydojo.app.dto;
++
++import org.springframework.stereotype.Service;
++import pl.mydojo.app.entities.User;
++
++import java.util.function.Function;
++
++@Service
++public class TrainerProfileDTOMapper implements Function<User, TrainerProfileDTO> {
++
++    @Override
++    public TrainerProfileDTO apply(User user) {
++
++        return new TrainerProfileDTO(
++                user.getId(),
++                user.getFirstName(),
++                user.getLastName()
++        );
++    }
++}
+diff --git a/src/main/java/pl/mydojo/app/dto/UserProfileAdminDTO.java b/src/main/java/pl/mydojo/app/dto/UserProfileAdminDTO.java
+new file mode 100644
+index 0000000..387aae1
+--- /dev/null
++++ b/src/main/java/pl/mydojo/app/dto/UserProfileAdminDTO.java
+@@ -0,0 +1,24 @@
++package pl.mydojo.app.dto;
++
++import lombok.*;
++import pl.mydojo.app.entities.Role;
++
++import java.time.LocalDate;
++import java.util.List;
++
++@Getter
++@Setter
++@Builder
++@NoArgsConstructor
++@AllArgsConstructor
++public class UserProfileAdminDTO {
++    private Long id;
++    private String firstName;
++    private String lastName;
++    private LocalDate dob;
++    private int age;
++    private String email;
++    private List<Role> roles;
++    private boolean enabled;
++
++}
+diff --git a/src/main/java/pl/mydojo/app/dto/UserProfileAdminDTOMapper.java b/src/main/java/pl/mydojo/app/dto/UserProfileAdminDTOMapper.java
+new file mode 100644
+index 0000000..e26946e
+--- /dev/null
++++ b/src/main/java/pl/mydojo/app/dto/UserProfileAdminDTOMapper.java
+@@ -0,0 +1,28 @@
++package pl.mydojo.app.dto;
++
++import org.springframework.stereotype.Service;
++import pl.mydojo.app.entities.User;
++import pl.mydojo.app.utils.AgeUtil;
++
++import java.util.function.Function;
++
++@Service
++public class UserProfileAdminDTOMapper implements Function<User, UserProfileAdminDTO> {
++
++    @Override
++    public UserProfileAdminDTO apply(User user) {
++
++        int age = AgeUtil.calculateAge(user);
++
++        return new UserProfileAdminDTO(
++                user.getId(),
++                user.getFirstName(),
++                user.getLastName(),
++                user.getDob(),
++                age,
++                user.getEmail(),
++                user.getRoles(),
++                user.getEnabled()
++        );
++    }
++}
+diff --git a/src/main/java/pl/mydojo/app/dto/UserProfileDTOMapper.java b/src/main/java/pl/mydojo/app/dto/UserProfileDTOMapper.java
+new file mode 100644
+index 0000000..5611c94
+--- /dev/null
++++ b/src/main/java/pl/mydojo/app/dto/UserProfileDTOMapper.java
+@@ -0,0 +1,21 @@
++package pl.mydojo.app.dto;
++
++import org.springframework.stereotype.Service;
++import pl.mydojo.app.entities.User;
++
++import java.util.function.Function;
++
++@Service
++public class UserProfileDTOMapper implements Function<User, UserProfileDTO> {
++
++    @Override
++    public UserProfileDTO apply(User user) {
++
++        return new UserProfileDTO(
++                user.getFirstName(),
++                user.getLastName(),
++                user.getDob(),
++                user.getEmail()
++        );
++    }
++}
+diff --git a/src/main/java/pl/mydojo/app/dto/VenueDTO.java b/src/main/java/pl/mydojo/app/dto/VenueDTO.java
+new file mode 100644
+index 0000000..27a17d0
+--- /dev/null
++++ b/src/main/java/pl/mydojo/app/dto/VenueDTO.java
+@@ -0,0 +1,17 @@
++package pl.mydojo.app.dto;
++
++import lombok.*;
++
++import java.util.List;
++
++@Getter
++@Setter
++@Builder
++@NoArgsConstructor
++@AllArgsConstructor
++public class VenueDTO {
++    long id;
++    private String name;
++    private String address;
++    private List<Long> schedules;
++}
+diff --git a/src/main/java/pl/mydojo/app/dto/VenueDTOMapper.java b/src/main/java/pl/mydojo/app/dto/VenueDTOMapper.java
+new file mode 100644
+index 0000000..b654367
+--- /dev/null
++++ b/src/main/java/pl/mydojo/app/dto/VenueDTOMapper.java
+@@ -0,0 +1,28 @@
++package pl.mydojo.app.dto;
++
++import org.springframework.stereotype.Service;
++import pl.mydojo.app.entities.Venue;
++
++import java.util.List;
++import java.util.function.Function;
++import java.util.stream.Collectors;
++
++@Service
++public class VenueDTOMapper implements Function<Venue, VenueDTO> {
++
++    @Override
++    public VenueDTO apply(Venue venue) {
++
++        List<Long> schedulesId = venue.getSchedules()
++                .stream()
++                .map(s -> s.getId())
++                .collect(Collectors.toList());
++
++        return new VenueDTO(
++                venue.getId(),
++                venue.getName(),
++                venue.getAddress(),
++                schedulesId
++        );
++    }
++}
+diff --git a/src/main/java/pl/mydojo/app/entities/Role.java b/src/main/java/pl/mydojo/app/entities/Role.java
+new file mode 100644
+index 0000000..2c66f66
+--- /dev/null
++++ b/src/main/java/pl/mydojo/app/entities/Role.java
+@@ -0,0 +1,26 @@
++package pl.mydojo.app.entities;
++
++import jakarta.persistence.*;
++import lombok.AllArgsConstructor;
++import lombok.Getter;
++import lombok.NoArgsConstructor;
++import lombok.Setter;
++
++@Entity(name = "roles")
++@Getter
++@Setter
++@AllArgsConstructor
++@NoArgsConstructor
++public class Role {
++
++    @Id
++    @GeneratedValue(strategy = GenerationType.IDENTITY)
++    private Long id;
++
++    @Enumerated(EnumType.STRING)
++    private RoleType type;
++
++    public Role(RoleType type) {
++        this.type = type;
++    }
++}
+diff --git a/src/main/java/pl/mydojo/app/entities/Schedule.java b/src/main/java/pl/mydojo/app/entities/Schedule.java
+new file mode 100644
+index 0000000..bcf7366
+--- /dev/null
++++ b/src/main/java/pl/mydojo/app/entities/Schedule.java
+@@ -0,0 +1,33 @@
++package pl.mydojo.app.entities;
++
++import jakarta.persistence.*;
++import lombok.*;
++
++import java.time.LocalTime;
++
++@Entity
++@Table(name = "schedules")
++@Getter
++@Setter
++@Builder
++@NoArgsConstructor
++@AllArgsConstructor
++public class Schedule {
++
++    @Id
++    @GeneratedValue(strategy = GenerationType.IDENTITY)
++    private Long id;
++
++    @Enumerated(EnumType.STRING)
++    private DayOfWeek dayOfWeek;
++    private LocalTime time;
++
++    @ManyToOne
++    @JoinColumn(name = "venue_id")
++    private Venue venue;
++
++    @ManyToOne
++    @JoinColumn(name = "training_group_id")
++    private TrainingGroup trainingGroup;
++
++}
+\ No newline at end of file
+diff --git a/src/main/java/pl/mydojo/app/entities/Venue.java b/src/main/java/pl/mydojo/app/entities/Venue.java
+new file mode 100644
+index 0000000..9f9bbc1
+--- /dev/null
++++ b/src/main/java/pl/mydojo/app/entities/Venue.java
+@@ -0,0 +1,26 @@
++package pl.mydojo.app.entities;
++
++import jakarta.persistence.*;
++import lombok.*;
++
++import java.util.List;
++
++
++@Entity
++@Table(name = "venues")
++@Getter
++@Setter
++@Builder
++@NoArgsConstructor
++@AllArgsConstructor
++public class Venue {
++
++    @Id
++    @GeneratedValue(strategy = GenerationType.IDENTITY)
++    private Long id;
++    private String name;
++    private String address;
++
++    @OneToMany(mappedBy = "venue", cascade = CascadeType.ALL)
++    private List<Schedule> schedules;
++}
+diff --git a/src/main/java/pl/mydojo/app/repositories/ScheduleRepository.java b/src/main/java/pl/mydojo/app/repositories/ScheduleRepository.java
+new file mode 100644
+index 0000000..498b44b
+--- /dev/null
++++ b/src/main/java/pl/mydojo/app/repositories/ScheduleRepository.java
+@@ -0,0 +1,11 @@
++package pl.mydojo.app.repositories;
++
++import org.springframework.data.jpa.repository.JpaRepository;
++import org.springframework.stereotype.Repository;
++import pl.mydojo.app.entities.Schedule;
++
++@Repository
++public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
++
++    Schedule findScheduleById(long id);
++}
+diff --git a/src/main/java/pl/mydojo/app/services/DojoStatusService.java b/src/main/java/pl/mydojo/app/services/DojoStatusService.java
+new file mode 100644
+index 0000000..37b604b
+--- /dev/null
++++ b/src/main/java/pl/mydojo/app/services/DojoStatusService.java
+@@ -0,0 +1,36 @@
++package pl.mydojo.app.services;
++
++import org.springframework.stereotype.Service;
++import pl.mydojo.app.dto.DojoStatusDTO;
++import pl.mydojo.app.entities.RoleType;
++import pl.mydojo.app.repositories.TrainingGroupRepository;
++import pl.mydojo.app.repositories.UserRepository;
++
++@Service
++public class DojoStatusService {
++
++    private final UserRepository userRepository;
++    private final TrainingGroupRepository trainingGroupRepository;
++
++    public DojoStatusService(UserRepository userRepository,
++                             TrainingGroupRepository trainingGroupRepository) {
++        this.userRepository = userRepository;
++        this.trainingGroupRepository = trainingGroupRepository;
++    }
++
++    public DojoStatusDTO getDojoStatus() {
++        long numberOfStudents = userRepository.countByRole(RoleType.STUDENT);
++        long numberOfTrainers = userRepository.countByRole(RoleType.TRAINER);
++        long numberOfTrainingGroups = trainingGroupRepository.count();
++        long numberOfEnabledUsers = userRepository.countByEnabled(true);
++        long numberOfDisabledUsers = userRepository.countByEnabled(false);
++
++        return new DojoStatusDTO(
++                numberOfStudents,
++                numberOfTrainers,
++                numberOfTrainingGroups,
++                numberOfEnabledUsers,
++                numberOfDisabledUsers);
++    }
++
++}
+diff --git a/src/main/java/pl/mydojo/exceptions/AuthenticationExceptionHandler.java b/src/main/java/pl/mydojo/exceptions/AuthenticationExceptionHandler.java
+new file mode 100644
+index 0000000..7736e2b
+--- /dev/null
++++ b/src/main/java/pl/mydojo/exceptions/AuthenticationExceptionHandler.java
+@@ -0,0 +1,39 @@
++package pl.mydojo.exceptions;
++
++import org.springframework.http.HttpStatus;
++import org.springframework.http.ResponseEntity;
++import org.springframework.web.bind.annotation.ExceptionHandler;
++import org.springframework.web.bind.annotation.RestControllerAdvice;
++import pl.mydojo.exceptions.authentication.BadAuthenticationException;
++import pl.mydojo.exceptions.authentication.UserDisabledException;
++
++import java.util.HashMap;
++import java.util.Map;
++
++@RestControllerAdvice
++public class AuthenticationExceptionHandler {
++
++    @ExceptionHandler(BadAuthenticationException.class)
++    public ResponseEntity<?> handleBadAuthenticationException(BadAuthenticationException e) {
++        Map<String, Object> response = new HashMap<>();
++        response.put("error", "authentication-001");
++        response.put("message", e.getMessage());
++        response.put("status", HttpStatus.UNAUTHORIZED.value());
++
++        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
++    }
++
++    //authentication-002 in JwtAuthenticationFilter
++    //authentication-003 in CustomAccessDeniedHandler
++    //authentication-004 in CustomAuthenticationEntryPoint
++
++    @ExceptionHandler(UserDisabledException.class)
++    public ResponseEntity<?> handleUserDisabledException(UserDisabledException e) {
++        Map<String, Object> response = new HashMap<>();
++        response.put("error", "authentication-005");
++        response.put("message", e.getMessage());
++        response.put("status", HttpStatus.UNAUTHORIZED.value());
++
++        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
++    }
++}
+\ No newline at end of file
+diff --git a/src/main/java/pl/mydojo/exceptions/UserExceptionHandler.java b/src/main/java/pl/mydojo/exceptions/UserExceptionHandler.java
+new file mode 100644
+index 0000000..3c18555
+--- /dev/null
++++ b/src/main/java/pl/mydojo/exceptions/UserExceptionHandler.java
+@@ -0,0 +1,35 @@
++package pl.mydojo.exceptions;
++
++import org.springframework.http.HttpStatus;
++import org.springframework.http.ResponseEntity;
++import org.springframework.web.bind.annotation.ExceptionHandler;
++import org.springframework.web.bind.annotation.RestControllerAdvice;
++import pl.mydojo.exceptions.user.UserAlreadyTakenException;
++import pl.mydojo.exceptions.user.UserNotFoundException;
++
++import java.util.HashMap;
++import java.util.Map;
++
++@RestControllerAdvice
++public class UserExceptionHandler {
++
++    @ExceptionHandler(UserAlreadyTakenException.class)
++    public ResponseEntity<?> handleUserAlreadyTakenException(UserAlreadyTakenException e) {
++        Map<String, Object> response = new HashMap<>();
++        response.put("error", "user-001");
++        response.put("message", e.getMessage());
++        response.put("status", HttpStatus.CONFLICT.value());
++
++        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
++    }
++
++    @ExceptionHandler(UserNotFoundException.class)
++    public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException e) {
++        Map<String, Object> response = new HashMap<>();
++        response.put("error", "user-002");
++        response.put("message", e.getMessage());
++        response.put("status", HttpStatus.NOT_FOUND.value());
++
++        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
++    }
++}
+diff --git a/src/main/java/pl/mydojo/exceptions/user/UserNotFoundException.java b/src/main/java/pl/mydojo/exceptions/user/UserNotFoundException.java
+new file mode 100644
+index 0000000..6559c5b
+--- /dev/null
++++ b/src/main/java/pl/mydojo/exceptions/user/UserNotFoundException.java
+@@ -0,0 +1,11 @@
++package pl.mydojo.exceptions.user;
++
++public class UserNotFoundException extends RuntimeException {
++    public UserNotFoundException(Long id) {
++        super("User with provided ID: " + id + " does not exist.");
++    }
++
++    public UserNotFoundException(String email) {
++        super("User with provided e-mail: " + email + " does not exist.");
++    }
++}
+diff --git a/src/main/java/pl/mydojo/security/authentication/AuthenticationRequest.java b/src/main/java/pl/mydojo/security/authentication/AuthenticationRequest.java
+new file mode 100644
+index 0000000..145364a
+--- /dev/null
++++ b/src/main/java/pl/mydojo/security/authentication/AuthenticationRequest.java
+@@ -0,0 +1,14 @@
++package pl.mydojo.security.authentication;
++
++import lombok.*;
++
++@Getter
++@Setter
++@AllArgsConstructor
++@NoArgsConstructor
++@Builder
++public class AuthenticationRequest {
++
++    private String email;
++    private String password;
++}
+diff --git a/src/main/java/pl/mydojo/security/authentication/AuthenticationResponse.java b/src/main/java/pl/mydojo/security/authentication/AuthenticationResponse.java
+new file mode 100644
+index 0000000..3799557
+--- /dev/null
++++ b/src/main/java/pl/mydojo/security/authentication/AuthenticationResponse.java
+@@ -0,0 +1,18 @@
++package pl.mydojo.security.authentication;
++
++import lombok.*;
++
++import java.util.List;
++
++@Getter
++@Setter
++@Builder
++@NoArgsConstructor
++@AllArgsConstructor
++public class AuthenticationResponse {
++    private String message;
++    private String accessToken;
++    private String refreshToken;
++    private List<String> roles;
++    private String firstName;
++}
+diff --git a/src/main/java/pl/mydojo/security/authentication/AuthenticationService.java b/src/main/java/pl/mydojo/security/authentication/AuthenticationService.java
+new file mode 100644
+index 0000000..9569a91
+--- /dev/null
++++ b/src/main/java/pl/mydojo/security/authentication/AuthenticationService.java
+@@ -0,0 +1,145 @@
++package pl.mydojo.security.authentication;
++
++import org.springframework.security.authentication.AuthenticationManager;
++import org.springframework.security.authentication.DisabledException;
++import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
++import org.springframework.security.core.AuthenticationException;
++import org.springframework.security.crypto.password.PasswordEncoder;
++import org.springframework.stereotype.Service;
++import pl.mydojo.app.entities.Role;
++import pl.mydojo.app.entities.RoleType;
++import pl.mydojo.app.entities.User;
++import pl.mydojo.app.repositories.RoleRepository;
++import pl.mydojo.app.repositories.UserRepository;
++import pl.mydojo.app.services.UserService;
++import pl.mydojo.exceptions.authentication.BadAuthenticationException;
++import pl.mydojo.exceptions.authentication.UserDisabledException;
++import pl.mydojo.exceptions.user.UserAlreadyTakenException;
++import pl.mydojo.security.jwt.JwtService;
++import pl.mydojo.security.registration.RegisterRequest;
++
++import java.io.IOException;
++import java.util.ArrayList;
++import java.util.List;
++import java.util.stream.Collectors;
++
++@Service
++public class AuthenticationService {
++
++    private final UserService userService;
++    private final RoleRepository roleRepository;
++    private final UserRepository userRepository;
++    private final PasswordEncoder passwordEncoder;
++    private final JwtService jwtService;
++    private final AuthenticationManager authenticationManager;
++
++    public AuthenticationService(UserService userService,
++                                 RoleRepository roleRepository,
++                                 UserRepository userRepository,
++                                 PasswordEncoder passwordEncoder,
++                                 JwtService jwtService,
++                                 AuthenticationManager authenticationManager) {
++        this.userService = userService;
++        this.roleRepository = roleRepository;
++        this.userRepository = userRepository;
++        this.passwordEncoder = passwordEncoder;
++        this.jwtService = jwtService;
++        this.authenticationManager = authenticationManager;
++    }
++
++    public AuthenticationResponse register(RegisterRequest request) {
++
++        String email = request.getEmail();
++
++        if (userRepository.findUserByEmail(email).isPresent()) {
++            throw new UserAlreadyTakenException(email);
++        }
++
++        Role roleStudent = roleRepository.findByType(RoleType.STUDENT)
++                .orElseThrow(() -> new RuntimeException("Role not found"));
++
++        List<Role> assignedRoles = new ArrayList<>() {{
++            add(roleStudent);
++        }};
++
++        User user = User.builder()
++                .firstName(request.getFirstName())
++                .lastName(request.getLastName())
++                .dob(request.getDob())
++                .email(email)
++                .password(passwordEncoder.encode(request.getPassword()))
++                .roles(assignedRoles)
++                .build();
++
++        userService.addNewUser(user);
++        String accessToken = jwtService.generateAccessToken(user);
++        String refreshToken = jwtService.generateRefreshToken(user);
++
++        return AuthenticationResponse.builder()
++                .accessToken(accessToken)
++                .refreshToken(refreshToken)
++                .build();
++    }
++
++    public AuthenticationResponse authenticate(AuthenticationRequest request) {
++        try {
++            authenticationManager.authenticate(
++                    new UsernamePasswordAuthenticationToken(
++                            request.getEmail(),
++                            request.getPassword()
++                    )
++            );
++        } catch (DisabledException e) {
++            throw new UserDisabledException();
++        } catch (AuthenticationException e) {
++            throw new BadAuthenticationException();
++        }
++
++        User user = userService.getUserByEmail(request.getEmail());
++        String accessToken = jwtService.generateAccessToken(user);
++        String refreshToken = jwtService.generateRefreshToken(user);
++
++        List<Role> assignedRoles = userService.getUserRoles(user.getId());
++        List<String> roles = assignedRoles
++                .stream()
++                .map(role -> role.getType().name())
++                .collect(Collectors.toList());
++
++        return AuthenticationResponse.builder()
++                .message("Authentication successful")
++                .accessToken(accessToken)
++                .refreshToken(refreshToken)
++                .firstName(user.getFirstName())
++                .roles(roles)
++                .build();
++    }
++
++    public RefreshResponse refreshToken(String token) throws IOException {
++
++        final String refreshToken;
++        final String userEmail;
++
++        if (token == null || !token.startsWith("Bearer ")) {
++            throw new BadAuthenticationException();
++        }
++
++        refreshToken = token.substring(7);
++        userEmail = jwtService.extractUsername(refreshToken);
++
++        if (userEmail != null) {
++            User user = this.userRepository.findUserByEmail(userEmail).orElseThrow();
++
++            if (jwtService.isTokenValid(refreshToken, user)) {
++                String accessToken = jwtService.generateAccessToken(user);
++
++                return RefreshResponse.builder()
++                        .message("New access token created")
++                        .accessToken(accessToken)
++                        .build();
++            }
++        }
++        throw new BadAuthenticationException();
++    }
++}
++
++                       
+\ No newline at end of file
+diff --git a/src/main/java/pl/mydojo/security/authentication/RefreshResponse.java b/src/main/java/pl/mydojo/security/authentication/RefreshResponse.java
+new file mode 100644
+index 0000000..81afd9a
+--- /dev/null
++++ b/src/main/java/pl/mydojo/security/authentication/RefreshResponse.java
+@@ -0,0 +1,13 @@
++package pl.mydojo.security.authentication;
++
++import lombok.*;
++
++@Getter
++@Setter
++@Builder
++@NoArgsConstructor
++@AllArgsConstructor
++public class RefreshResponse {
++    private String message;
++    private String accessToken;
++}
+diff --git a/src/main/java/pl/mydojo/security/jwt/JwtAuthenticationFilter.java b/src/main/java/pl/mydojo/security/jwt/JwtAuthenticationFilter.java
+new file mode 100644
+index 0000000..e14c709
+--- /dev/null
++++ b/src/main/java/pl/mydojo/security/jwt/JwtAuthenticationFilter.java
+@@ -0,0 +1,77 @@
++package pl.mydojo.security.jwt;
++
++import io.jsonwebtoken.ExpiredJwtException;
++import jakarta.servlet.FilterChain;
++import jakarta.servlet.ServletException;
++import jakarta.servlet.http.HttpServletRequest;
++import jakarta.servlet.http.HttpServletResponse;
++import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
++import org.springframework.security.core.context.SecurityContextHolder;
++import org.springframework.security.core.userdetails.UserDetails;
++import org.springframework.security.core.userdetails.UserDetailsService;
++import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
++import org.springframework.stereotype.Component;
++import org.springframework.web.filter.OncePerRequestFilter;
++
++import java.io.IOException;
++
++@Component
++public class JwtAuthenticationFilter extends OncePerRequestFilter {
++
++    private final JwtService jwtService;
++    private final UserDetailsService userDetailsService;
++
++    public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
++        this.jwtService = jwtService;
++        this.userDetailsService = userDetailsService;
++    }
++
++    @Override
++    protected void doFilterInternal(
++            HttpServletRequest request,
++            HttpServletResponse response,
++            FilterChain filterChain
++    ) throws ServletException, IOException {
++
++        try {
++            final String authenticationHeader = request.getHeader("Authorization");
++            final String accessToken;
++            final String userEmail;
++
++            if (authenticationHeader == null || !authenticationHeader.startsWith("Bearer ")) {
++                filterChain.doFilter(request, response);
++                return;
++            }
++
++            accessToken = authenticationHeader.substring(7);
++            userEmail = jwtService.extractUsername(accessToken);
++
++            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
++                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
++
++                if (jwtService.isTokenValid(accessToken, userDetails)) {
++                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
++                            userDetails,
++                            null,
++                            userDetails.getAuthorities()
++                    );
++                    authToken.setDetails(
++                            new WebAuthenticationDetailsSource().buildDetails(request)
++                    );
++                    SecurityContextHolder.getContext().setAuthentication(authToken);
++                }
++            }
++        } catch (ExpiredJwtException e) {
++            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
++            response.setContentType("application/json");
++            response.getWriter().write(
++                    "{" +
++                            "\"error\": \"authentication-002\"," +
++                            "\"message\": \"Access token expired\"," +
++                            "\"status\": 401" +
++                            "}");
++            return;
++        }
++        filterChain.doFilter(request, response);
++    }
++}
+diff --git a/src/main/java/pl/mydojo/security/registration/RegisterResponse.java b/src/main/java/pl/mydojo/security/registration/RegisterResponse.java
+new file mode 100644
+index 0000000..ed9ce14
+--- /dev/null
++++ b/src/main/java/pl/mydojo/security/registration/RegisterResponse.java
+@@ -0,0 +1,15 @@
++package pl.mydojo.security.registration;
++
++import lombok.AllArgsConstructor;
++import lombok.Getter;
++import lombok.NoArgsConstructor;
++import lombok.Setter;
++
++@Getter
++@Setter
++@NoArgsConstructor
++@AllArgsConstructor
++public class RegisterResponse {
++    private String message;
++    private String accessToken;
++}
+diff --git a/src/main/resources/application-init-db.properties b/src/main/resources/application-init-db.properties
+new file mode 100644
+index 0000000..e69de29
+diff --git a/src/main/resources/application-prod.properties b/src/main/resources/application-prod.properties
+new file mode 100644
+index 0000000..d8dd869
+--- /dev/null
++++ b/src/main/resources/application-prod.properties
+@@ -0,0 +1,14 @@
++spring.jpa.hibernate.ddl-auto=update
++spring.datasource.url=jdbc:mysql://localhost:3306/mydojo_pl
++spring.datasource.username=mydojo
++spring.datasource.password=9Umvx5G5kpFSWLhU85zjTUjy8
++spring.web.locale=pl
++spring.web.locale-resolver=fixed
++server.error.include-message=always
++
++#JWT TOKEN:
++secretKey=jP7dkEBgAt4tSCCQCXmc3YexmEzyBFMxvHYFuwctwhTP3MsLHt4cKS3P
++#10min
++accessTokenExpiration=600000
++#1day
++refreshTokenExpiration=86400000
+\ No newline at end of file
+diff --git a/src/main/resources/application.properties b/src/main/resources/application.properties
+index 0450c8e..257b306 100644
+--- a/src/main/resources/application.properties
++++ b/src/main/resources/application.properties
+@@ -1,7 +1 @@
+-spring.jpa.hibernate.ddl-auto=update
+-spring.datasource.url=jdbc:mysql://localhost:3306/mydojo_pl
+-spring.datasource.username=root
+-spring.datasource.password=coderslab
+-
+-spring.web.locale=pl
+-spring.web.locale-resolver=fixed
+\ No newline at end of file
++spring.profiles.active=dev
+\ No newline at end of file
+diff --git a/src/main/resources/messages.properties b/src/main/resources/messages.properties
+deleted file mode 100644
+index edbd4a3..0000000
+--- a/src/main/resources/messages.properties
++++ /dev/null
+@@ -1,5 +0,0 @@
+-app.default=Default text (default)
+-
+-book.description=Opis
+-book.title=Tytuł
+-button.send=Zapisz
+\ No newline at end of file
+diff --git a/src/main/resources/messages_en.properties b/src/main/resources/messages_en.properties
+deleted file mode 100644
+index 84fc046..0000000
+--- a/src/main/resources/messages_en.properties
++++ /dev/null
+@@ -1,2 +0,0 @@
+-app.header=Hello!
+-app.copyright=Copyright by BartWiniarski (en)
+diff --git a/src/main/resources/messages_pl.properties b/src/main/resources/messages_pl.properties
+deleted file mode 100644
+index 6a2e13e..0000000
+--- a/src/main/resources/messages_pl.properties
++++ /dev/null
+@@ -1,8 +0,0 @@
+-app.header=Witam!
+-app.copyright=Copyright by BartWiniarski (PL)
+-
+-button.save = Zapisz
+-book.header.title = Zarzadzanie książkami
+-book.title=Tytuł
+-button.send=Zapisz
+-book.description=Opis
+\ No newline at end of file
+diff --git a/src/test/java/me/winiarski/mydojo_pl/ApplicationTests.java b/src/test/java/me/winiarski/mydojo_pl/ApplicationTests.java
+deleted file mode 100644
+index a642490..0000000
+--- a/src/test/java/me/winiarski/mydojo_pl/ApplicationTests.java
++++ /dev/null
+@@ -1,13 +0,0 @@
+-package me.winiarski.mydojo_pl;
+-
+-import org.junit.jupiter.api.Test;
+-import org.springframework.boot.test.context.SpringBootTest;
+-
+-@SpringBootTest
+-class ApplicationTests {
+-
+-	@Test
+-	void contextLoads() {
+-	}
+-
+-}

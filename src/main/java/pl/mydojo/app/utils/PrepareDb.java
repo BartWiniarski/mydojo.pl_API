@@ -11,7 +11,6 @@ import pl.mydojo.app.entities.Role;
 import pl.mydojo.app.entities.RoleType;
 import pl.mydojo.app.entities.User;
 import pl.mydojo.app.repositories.RoleRepository;
-import pl.mydojo.app.repositories.ScheduleRepository;
 import pl.mydojo.app.services.ScheduleService;
 import pl.mydojo.app.services.TrainingGroupService;
 import pl.mydojo.app.services.UserService;
@@ -115,15 +114,34 @@ public class PrepareDb {
         TrainingGroupDTO trainingGroupDTO = TrainingGroupDTO.builder()
                 .name("Grupa podstawowa")
                 .description("Grupa początkująca")
+                .studentsId(new ArrayList<>() {{
+                    add(3L);
+                    add(20L);
+                    add(21L);
+                }})
+                .trainersId(new ArrayList<>() {{
+                    add(2L);
+                }})
                 .build();
 
         trainingGroupService.addNewTrainingGroup(trainingGroupDTO);
     }
 
-    public void setBasicSchedule() {
+    public void setPrimarySchedule() {
         ScheduleDTO scheduleDTO = ScheduleDTO.builder()
                 .dayOfWeek(DayOfWeek.MONDAY)
                 .time(LocalTime.of(20, 0, 0))
+                .venueId(1L)
+                .trainingGroupId(1L)
+                .build();
+
+        scheduleService.addNewSchedule(scheduleDTO);
+    }
+
+    public void setSecondarySchedule() {
+        ScheduleDTO scheduleDTO = ScheduleDTO.builder()
+                .dayOfWeek(DayOfWeek.WEDNESDAY)
+                .time(LocalTime.of(19, 30, 0))
                 .venueId(1L)
                 .trainingGroupId(1L)
                 .build();

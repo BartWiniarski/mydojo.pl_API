@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/admin")
+@RequestMapping("v1/admin")
 public class AdminController {
 
     private final UserService userService;
@@ -34,29 +34,6 @@ public class AdminController {
         this.venueService = venueService;
         this.scheduleService = scheduleService;
     }
-
-    @GetMapping("/test")
-    public TestResponse testAdmin() {
-        String role = "admin";
-        LocalDateTime timeNow = LocalDateTime.now();
-        String loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit," +
-                "sed do eiusmod tempor incididunt" +
-                "ut labore et dolore magna aliqua. Laoreet suspendisse interdum" +
-                "consectetur libero id faucibus nisl tincidunt. Orci ac auctor augue mauris augue neque gravida in." +
-                " Tristique magna sit amet purus gravida. Nunc sed id semper risus. Convallis osuere" +
-                "morbi leo urna. Morbi tincidunt augue interdum velit euismod in. Tempus urna et" +
-                "pharetra. Lacus viverra vitae congue eu consequat. Sed odio morbi quis commodo" +
-                "Lacus sed viverra tellus in hac habitasse platea dictumst vestibulum. Posuere" +
-                "sollicitudin aliquam ultrices sagittis orci a scelerisque purus. Elementum" +
-                "egestas sed sed risus pretium quam. Tincidunt nunc pulvinar sapien et ligula";
-
-        return TestResponse.builder()
-                .role(role)
-                .time(timeNow)
-                .loremIpsum(loremIpsum)
-                .build();
-    }
-
 
     // --------------- USERS -------------------- \\
     @GetMapping("/users")
@@ -80,8 +57,8 @@ public class AdminController {
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<?>  putUserById(@PathVariable Long id,
-                            @RequestBody UserProfileAdminDTO userProfileAdminDTO) {
+    public ResponseEntity<?> putUserById(@PathVariable Long id,
+                                         @RequestBody UserProfileAdminDTO userProfileAdminDTO) {
         userService.updateUserProfileAdminById(id, userProfileAdminDTO);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("User with id: " + id + " updated");
@@ -127,7 +104,7 @@ public class AdminController {
 
     @PutMapping("/trainingGroups/{id}")
     public ResponseEntity<?> putTrainingGroupById(@PathVariable Long id,
-                                                       @RequestBody TrainingGroupDTO trainingGroupDTO) {
+                                                  @RequestBody TrainingGroupDTO trainingGroupDTO) {
         trainingGroupService.updateTrainingGroupById(id, trainingGroupDTO);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED)
@@ -159,18 +136,18 @@ public class AdminController {
 
     // --------------- DOJO STATUS -------------------- \\
     @GetMapping("/dojo/status")
-    public DojoStatusDTO getDojoStatus(){
+    public DojoStatusDTO getDojoStatus() {
         return dojoStatusService.getDojoStatus();
     }
 
     // --------------- VENUES -------------------- \\
     @GetMapping("/venues")
-    public List<VenueDTO> getVenues(){
+    public List<VenueDTO> getVenues() {
         return venueService.getVenues();
     }
 
     @GetMapping("/venues/{id}")
-    public VenueDTO getVenue(@PathVariable long id){
+    public VenueDTO getVenue(@PathVariable long id) {
         return venueService.getVenue(id);
     }
 
@@ -185,7 +162,7 @@ public class AdminController {
 
     @PutMapping("/venues/{id}")
     public ResponseEntity<?> putVenueById(@PathVariable Long id,
-                                                  @RequestBody VenueDTO venueDTO) {
+                                          @RequestBody VenueDTO venueDTO) {
         venueService.updateVenueById(id, venueDTO);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED)
@@ -202,17 +179,17 @@ public class AdminController {
 
     // --------------- SCHEDULES -------------------- \\
     @GetMapping("/schedules")
-    public List<ScheduleDTO> getSchedules(){
+    public List<ScheduleDTO> getSchedules() {
         return scheduleService.getSchedules();
     }
 
     @GetMapping("/schedules/{id}")
-    public ScheduleDTO getSchedule(@PathVariable long id){
+    public ScheduleDTO getSchedule(@PathVariable long id) {
         return scheduleService.getScheduleById(id);
     }
 
     @PostMapping("/schedules")
-    public ResponseEntity<?> postSchedule(@RequestBody ScheduleDTO scheduleDTO){
+    public ResponseEntity<?> postSchedule(@RequestBody ScheduleDTO scheduleDTO) {
         Schedule newSchedule = scheduleService.addNewSchedule(scheduleDTO);
 
         return ResponseEntity
@@ -222,7 +199,7 @@ public class AdminController {
 
     @PutMapping("/schedules/{id}")
     public ResponseEntity<?> putSchedule(@PathVariable long id,
-            @RequestBody ScheduleDTO scheduleDTO){
+                                         @RequestBody ScheduleDTO scheduleDTO) {
 
         scheduleService.updateScheduleById(id, scheduleDTO);
 

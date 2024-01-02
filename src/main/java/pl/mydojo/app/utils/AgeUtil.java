@@ -1,12 +1,13 @@
 package pl.mydojo.app.utils;
 
 import pl.mydojo.app.entities.User;
+
 import java.time.LocalDate;
 import java.time.Period;
 
 public class AgeUtil {
 
-    public static int calculateAge(User user){
+    public static int calculateAge(User user) {
         int age = 0;
         LocalDate dob = user.getDob();
 

@@ -7,7 +7,7 @@ import pl.mydojo.app.entities.Venue;
 import java.util.List;
 
 @Repository
-public interface VenueRepository extends JpaRepository<Venue,Long> {
+public interface VenueRepository extends JpaRepository<Venue, Long> {
 
     List<Venue> findAll();
 

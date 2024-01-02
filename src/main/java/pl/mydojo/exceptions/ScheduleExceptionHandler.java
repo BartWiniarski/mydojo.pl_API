@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pl.mydojo.exceptions.schedule.ScheduleNotFoundException;
-import pl.mydojo.exceptions.venue.VenueNotFoundException;
 
 import java.util.HashMap;
 import java.util.Map;

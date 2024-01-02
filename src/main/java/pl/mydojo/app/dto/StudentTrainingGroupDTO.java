@@ -9,11 +9,10 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TrainingGroupDTO {
+public class StudentTrainingGroupDTO {
     private Long id;
     private String name;
     private String description;
-    private List<Long> schedulesId;
-    private List<Long> studentsId;
-    private List<Long> trainersId;
+    private List<String> schedules;
+    private List<String> trainers;
 }

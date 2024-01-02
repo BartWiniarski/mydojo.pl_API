@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pl.mydojo.exceptions.trainingGroup.NotAssignedToTrainingGroupException;
 import pl.mydojo.exceptions.trainingGroup.TrainingGroupNotFoundException;
-import pl.mydojo.exceptions.user.UserAlreadyTakenException;
 
 import java.util.HashMap;
 import java.util.Map;

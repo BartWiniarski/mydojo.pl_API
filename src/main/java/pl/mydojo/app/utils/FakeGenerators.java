@@ -34,7 +34,7 @@ public class FakeGenerators {
             final String userFirstName = faker.name().firstName();
             final String userLastName = faker.name().lastName();
 
-            final Date date = faker.date().birthday(minAge,maxAge);
+            final Date date = faker.date().birthday(minAge, maxAge);
             final LocalDate userDob = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
             final String userEmail = userFirstName + "." + userLastName + "@" + type;
@@ -42,13 +42,13 @@ public class FakeGenerators {
             Role role;
             switch (type) {
                 case "admin":
-                    role = new Role(1L,RoleType.ADMIN);
+                    role = new Role(1L, RoleType.ADMIN);
                     break;
-                case "trener":
-                    role = new Role(2L,RoleType.TRAINER);
+                case "trainer":
+                    role = new Role(2L, RoleType.TRAINER);
                     break;
                 case "student":
-                    role = new Role(3L,RoleType.STUDENT);
+                    role = new Role(3L, RoleType.STUDENT);
                     break;
                 default:
                     throw new IllegalArgumentException("Nieobsługiwany typ: " + type);

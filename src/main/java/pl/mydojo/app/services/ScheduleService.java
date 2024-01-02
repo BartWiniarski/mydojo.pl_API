@@ -4,14 +4,11 @@ import org.springframework.stereotype.Service;
 import pl.mydojo.app.dto.ScheduleDTO;
 import pl.mydojo.app.dto.ScheduleDTOMapper;
 import pl.mydojo.app.entities.Schedule;
-import pl.mydojo.app.entities.Venue;
 import pl.mydojo.app.repositories.ScheduleRepository;
 import pl.mydojo.app.repositories.TrainingGroupRepository;
 import pl.mydojo.app.repositories.VenueRepository;
 import pl.mydojo.exceptions.schedule.ScheduleNotFoundException;
 import pl.mydojo.exceptions.trainingGroup.TrainingGroupNotFoundException;
-import pl.mydojo.exceptions.user.UserAlreadyTakenException;
-import pl.mydojo.exceptions.user.UserNotFoundException;
 import pl.mydojo.exceptions.venue.VenueNotFoundException;
 
 import java.util.List;

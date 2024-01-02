@@ -3,10 +3,7 @@ package pl.mydojo.app.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @Entity

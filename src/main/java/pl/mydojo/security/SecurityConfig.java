@@ -21,8 +21,6 @@ import pl.mydojo.security.authentication.CustomAccessDeniedHandler;
 import pl.mydojo.security.authentication.CustomAuthenticationEntryPoint;
 import pl.mydojo.security.jwt.JwtAuthenticationFilter;
 
-import static pl.mydojo.app.entities.RoleType.ADMIN;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -58,12 +56,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/home/**").permitAll()
-                        .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers("/api/v1/users/**").hasAnyRole ("ADMIN","TRAINER","STUDENT")
-                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/student/**").hasRole("STUDENT")
-                        .requestMatchers("/api/v1/trainer/**").hasRole("TRAINER")
+                        .requestMatchers("/status").permitAll()
+                        .requestMatchers("/v1/auth/**").permitAll()
+                        .requestMatchers("/v1/users/**").hasAnyRole("ADMIN", "TRAINER", "STUDENT")
+                        .requestMatchers("/v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/v1/student/**").hasRole("STUDENT")
+                        .requestMatchers("/v1/trainer/**").hasRole("TRAINER")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception
@@ -85,7 +83,8 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:5173"); // do zastąpienia przez konkretną domenę frontu
+        config.addAllowedOrigin("http://localhost:5173");
+        config.addAllowedOrigin("https://mydojo.pl");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);

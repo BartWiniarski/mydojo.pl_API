@@ -7,7 +7,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -34,8 +33,6 @@ public class User implements UserDetails {
     private Boolean locked = false;
     @Builder.Default
     private Boolean enabled = true;
-
-    //TODO zastanowić się czy nie zmienić query na leftJoin
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
@@ -104,14 +101,14 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
 
-        for(Role role : roles){
-            authorities.add(new SimpleGrantedAuthority("ROLE_"+role.getType().name()));
+        for (Role role : roles) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getType().name()));
         }
         return authorities;
     }
 
     @Override
-    public String getPassword(){
+    public String getPassword() {
         return password;
     }
 
